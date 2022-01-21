@@ -1,30 +1,18 @@
 #include "QGVIcon.h"
 
 
-QGVIcon::QGVIcon(QGVItem* parent, const QGV::GeoPos& geoPos, const QString& iconPath, const QGV::ItemFlags& iconFlags)
+QGVIcon::QGVIcon(QGVItem* parent, const QGV::GeoPos& geoPos, const QString& iconPath, const QSize& iconSize, const QGV::ItemFlags& iconFlags) :
+    mSize(iconSize), mAnchor(mSize.width() / 2, mSize.height() / 2)
 {
     setParent(parent);
-    setFlag(QGV::ItemFlag::IgnoreScale);
-    setFlag(QGV::ItemFlag::IgnoreAzimuth);
-    setFlag(QGV::ItemFlag::Highlightable);
-    setFlag(QGV::ItemFlag::HighlightCustom);
-    setFlag(QGV::ItemFlag::Highlightable);
-    setFlag(QGV::ItemFlag::Transformed);
     setFlags(iconFlags);
 
-    setGeometry(geoPos, QSize(32, 32), QPoint(16, 32));
+    setGeometry(geoPos, mSize, mAnchor);
 
     const QImage icon(iconPath);
-    if (icon.isNull()) {
-        qDebug() << "Image null: " << iconPath;
-    } else {
-        qDebug() << "Image ok: " << icon.size();
-    }
     loadImage(icon);
 
     refresh();
-
-    qDebug() << "Position: " << pos();
 }
 
 QGV::GeoPos QGVIcon::pos()
@@ -35,6 +23,16 @@ QGV::GeoPos QGVIcon::pos()
     }
 
     return getMap()->getProjection()->projToGeo(transform);
+}
+
+QSize QGVIcon::size()
+{
+    return mSize;
+}
+
+QPoint QGVIcon::anchor()
+{
+    return mAnchor;
 }
 
 void QGVIcon::projOnObjectStartMove(const QPointF& pos)
@@ -51,7 +49,7 @@ void QGVIcon::projOnObjectMovePos(const QPointF& pos)
 
     if (getMap()) {
         auto geoPos = getMap()->getProjection()->projToGeo(pos);
-        setGeometry(geoPos, QSize(32, 32), QPoint(16, 32));
+        setGeometry(geoPos, mSize, mAnchor);
         refresh();
     }
 
