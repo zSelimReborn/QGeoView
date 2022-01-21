@@ -9,6 +9,7 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
              Gui
              Widgets
              Network
+             Positioning
             )
 
 add_library(qgeoview SHARED
@@ -34,6 +35,8 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVWidgetScale.h
     include/QGeoView/QGVWidgetZoom.h
     include/QGeoView/QGVWidgetText.h
+    include/QGeoView/QGVUtils.h
+    include/QGeoView/QGVIcon.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -56,7 +59,10 @@ add_library(qgeoview SHARED
     src/QGVWidgetScale.cpp
     src/QGVWidgetZoom.cpp
     src/QGVWidgetText.cpp
-        src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp)
+    src/QGVUtils.cpp
+    src/QGVIcon.cpp
+    src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
+    )
 
 target_include_directories(qgeoview
     PUBLIC
@@ -77,6 +83,7 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Gui
         Qt${QT_VERSION}::Widgets
         Qt${QT_VERSION}::Network
+        Qt${QT_VERSION}::Positioning
         )
 
 add_library(QGeoView ALIAS qgeoview)
