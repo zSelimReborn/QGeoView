@@ -5,6 +5,7 @@
 #include "utils/DistanceUnits.hpp"
 
 class QGVIcon;
+class QGVWidgetText;
 
 class QGV_LIB_DECL QGVWidgetMeasure : public QGVWidget
 {
@@ -39,6 +40,15 @@ public:
     void setRightPinStartingPoint(const QGV::GeoPos&);
     QGV::GeoPos getRightPinStartingPoint();
 
+    void setDistanceLabelPrefix(const QString&);
+    QString getDistanceLabelPrefix();
+
+    void setDistanceAnchorEdges(const QSet<Qt::Edge>&);
+    QSet<Qt::Edge> getDistanceAnchorEdges();
+
+    void setDistanceLabelAnchor(const QPoint&);
+    QPoint getDistanceLabelAnchor();
+
     void addPinToMap();
 private:
     QGVIcon* createNewPin(const QGV::GeoPos&);
@@ -46,6 +56,8 @@ private:
     void updateDistanceLabel(const qreal&);
 
     void onPinMove(const QPointF&);
+
+    void initializeDistanceLabel();
 
 private:
     QGVIcon* leftPin;
@@ -57,6 +69,11 @@ private:
     QSize mIconSize;
     QGV::GeoPos mLeftPinStartingPoint;
     QGV::GeoPos mRightPinStartingPoint;
+
+    QGVWidgetText* mDistanceLabel;
+    QString mDistanceLabelPrefix;
+    QSet<Qt::Edge> mDistanceAnchorEdges;
+    QPoint mDistanceLabelAnchor;
 };
 
 #endif // QGVWIDGETMEASURE_H

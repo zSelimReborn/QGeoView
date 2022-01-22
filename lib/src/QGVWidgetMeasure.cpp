@@ -1,8 +1,11 @@
 #include "QGVWidgetMeasure.h"
 #include "QGVIcon.h"
 #include "QGVUtils.h"
+#include "QGVWidgetText.h"
 
 #include <QHBoxLayout>
+#include <QPaintEvent>
+#include <QPainter>
 
 QGVWidgetMeasure::QGVWidgetMeasure() :
     mUnit(DistanceUnits::Kilometers),
@@ -10,14 +13,15 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mIconPin(":/resources/pin-icon.png"),
     mIconSize(32, 32),
     mLeftPinStartingPoint(0, 0),
-    mRightPinStartingPoint(0, 1)
+    mRightPinStartingPoint(0, 1),
+    mDistanceLabelPrefix("Distance: "),
+    mDistanceAnchorEdges({Qt::TopEdge, Qt::LeftEdge}),
+    mDistanceLabelAnchor(5, 5)
 {
     setMouseTracking(true);
     setAnchor(QPoint(10, 10), { Qt::LeftEdge, Qt::TopEdge });
-    setLayout(new QHBoxLayout(this));
-    layout()->setSpacing(0);
-    layout()->setSizeConstraint(QLayout::SetMinimumSize);
-    layout()->setContentsMargins(0, 0, 0, 0);
+    setMaximumSize(QSize(100, 100));
+    setMinimumSize(QSize(100, 100));
 }
 
 QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit, const quint8& accuracy) :
@@ -108,6 +112,36 @@ QGV::GeoPos QGVWidgetMeasure::getRightPinStartingPoint()
     return mRightPinStartingPoint;
 }
 
+void QGVWidgetMeasure::setDistanceLabelPrefix(const QString& distanceLabelPrefix)
+{
+    mDistanceLabelPrefix = distanceLabelPrefix;
+}
+
+QString QGVWidgetMeasure::getDistanceLabelPrefix()
+{
+    return mDistanceLabelPrefix;
+}
+
+void QGVWidgetMeasure::setDistanceAnchorEdges(const QSet<Qt::Edge>& edges)
+{
+    mDistanceAnchorEdges = edges;
+}
+
+QSet<Qt::Edge> QGVWidgetMeasure::getDistanceAnchorEdges()
+{
+    return mDistanceAnchorEdges;
+}
+
+void QGVWidgetMeasure::setDistanceLabelAnchor(const QPoint& anchor)
+{
+    mDistanceLabelAnchor = anchor;
+}
+
+QPoint QGVWidgetMeasure::getDistanceLabelAnchor()
+{
+    return mDistanceLabelAnchor;
+}
+
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
@@ -124,6 +158,8 @@ void QGVWidgetMeasure::addPinToMap()
 
     leftPin = createNewPin(getLeftPinStartingPoint());
     rightPin = createNewPin(getRightPinStartingPoint());
+
+    initializeDistanceLabel();
 
     getMap()->addItem(leftPin);
     getMap()->addItem(rightPin);
@@ -143,6 +179,20 @@ void QGVWidgetMeasure::onPinMove(const QPointF &)
     updateDistanceLabel(distance);
 }
 
+void QGVWidgetMeasure::initializeDistanceLabel()
+{
+    if (getMap() == nullptr) {
+        return;
+    }
+
+    mDistanceLabel = new QGVWidgetText();
+    mDistanceLabel->setText(getDistanceLabelPrefix());
+    const auto edges = getDistanceAnchorEdges();
+    mDistanceLabel->setAnchor(getDistanceLabelAnchor(), edges);
+
+    getMap()->addWidget(mDistanceLabel);
+}
+
 void QGVWidgetMeasure::updateDistanceLabel(const qreal &meters)
 {
     QString result;
@@ -151,30 +201,30 @@ void QGVWidgetMeasure::updateDistanceLabel(const qreal &meters)
     switch (mUnit) {
         case DistanceUnits::Kilometers:
             if (meters > 1000) {
-                result = tr("Distance: %1 km").arg(QString::number(static_cast<double>(meters) / 1000, 'f', mAccuracy));
+                result = tr("%1: %2 km").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters) / 1000, 'f', mAccuracy));
             } else {
-                result = tr("Distance: %1 m").arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
+                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
             }
         break;
         case DistanceUnits::Miles:
             miles = meters / 1609.0;
 
             if (miles > 1) {
-                result = tr("Distance: %1 mi").arg(QString::number(static_cast<double>(miles), 'f', mAccuracy));
+                result = tr("%1: %2 mi").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(miles), 'f', mAccuracy));
             } else {
-                result = tr("Distance: %1 m").arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
+                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
             }
         break;
         case DistanceUnits::NauticalMiles:
             nauticalMiles = meters / 1852.0;
 
             if (nauticalMiles > 1) {
-                result = tr("Distance: %1 nm").arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
+                result = tr("%1: %2 nm").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
             } else {
-                result = tr("Distance: %1 m").arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
+                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
             }
         break;
     }
 
-    qDebug() << result;
+    mDistanceLabel->setText(result);
 }
