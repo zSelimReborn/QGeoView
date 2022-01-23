@@ -6,6 +6,7 @@
 
 class QGVIcon;
 class QGVWidgetText;
+//class QGVLine;
 
 class QGV_LIB_DECL QGVWidgetMeasure : public QGVWidget
 {
@@ -13,11 +14,13 @@ public:
     QGVWidgetMeasure();
     QGVWidgetMeasure(const DistanceUnits&, const quint8&);
     QGVWidgetMeasure(const QGV::GeoPos&, const QGV::GeoPos&);
+    QGVWidgetMeasure(const DistanceUnits&, const quint8&, const QGV::GeoPos&, const QGV::GeoPos&);
     QGVWidgetMeasure(
             const DistanceUnits&,
             const quint8&,
             const QString&,
             const QSize&,
+            const QPoint&,
             const QGV::GeoPos&,
             const QGV::GeoPos&
     );
@@ -33,6 +36,9 @@ public:
 
     void setIconSize(const QSize&);
     QSize getIconSize();
+
+    void setIconAnchor(const QPoint&);
+    QPoint getIconAnchor();
 
     void setLeftPinStartingPoint(const QGV::GeoPos&);
     QGV::GeoPos getLeftPinStartingPoint();
@@ -58,6 +64,7 @@ private:
     void onPinMove(const QPointF&);
 
     void initializeDistanceLabel();
+    //void initializePinLine();
 
 private:
     QGVIcon* leftPin;
@@ -67,6 +74,7 @@ private:
 
     QString mIconPin;
     QSize mIconSize;
+    QPoint mIconAnchor;
     QGV::GeoPos mLeftPinStartingPoint;
     QGV::GeoPos mRightPinStartingPoint;
 
@@ -74,6 +82,8 @@ private:
     QString mDistanceLabelPrefix;
     QSet<Qt::Edge> mDistanceAnchorEdges;
     QPoint mDistanceLabelAnchor;
+
+    //QGVLine* mPinLine;
 };
 
 #endif // QGVWIDGETMEASURE_H

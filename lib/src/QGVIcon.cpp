@@ -15,6 +15,14 @@ QGVIcon::QGVIcon(QGVItem* parent, const QGV::GeoPos& geoPos, const QString& icon
     refresh();
 }
 
+QGVIcon::QGVIcon(QGVItem* parent, const QGV::GeoPos& geoPos, const QString& iconPath, const QSize& iconSize, const QPoint& iconAnchor, const QGV::ItemFlags& iconFlags) :
+    QGVIcon(parent, geoPos, iconPath, iconSize, iconFlags)
+{
+    mAnchor = iconAnchor;
+    setGeometry(geoPos, mSize, mAnchor);
+    refresh();
+}
+
 QGV::GeoPos QGVIcon::pos()
 {
     auto transform = projAnchor();

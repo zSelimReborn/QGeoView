@@ -12,6 +12,7 @@ class QGV_LIB_DECL QGVIcon : public QGVImage
 
 public:
     QGVIcon(QGVItem*, const QGV::GeoPos&, const QString&, const QSize&, const QGV::ItemFlags&);
+    QGVIcon(QGVItem*, const QGV::GeoPos&, const QString&, const QSize&, const QPoint&,const QGV::ItemFlags&);
     QGV::GeoPos pos();
 
     QSize size();

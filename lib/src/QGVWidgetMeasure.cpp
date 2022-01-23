@@ -2,6 +2,7 @@
 #include "QGVIcon.h"
 #include "QGVUtils.h"
 #include "QGVWidgetText.h"
+//#include "QGVLine.h"
 
 #include <QHBoxLayout>
 #include <QPaintEvent>
@@ -12,6 +13,7 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mAccuracy(2),
     mIconPin(":/resources/pin-icon.png"),
     mIconSize(32, 32),
+    mIconAnchor(mIconSize.width() / 2, mIconSize.height()),
     mLeftPinStartingPoint(0, 0),
     mRightPinStartingPoint(0, 1),
     mDistanceLabelPrefix("Distance: "),
@@ -38,16 +40,27 @@ QGVWidgetMeasure::QGVWidgetMeasure(const QGV::GeoPos& leftPinStartingPoint, cons
     setRightPinStartingPoint(rightPinStartingPoint);
 }
 
+QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit, const quint8& accuracy, const QGV::GeoPos& leftPinStartingPoint, const QGV::GeoPos& rightPinStartingPoint) :
+    QGVWidgetMeasure()
+{
+    setUnit(unit);
+    setAccuracy(accuracy);
+    setLeftPinStartingPoint(leftPinStartingPoint);
+    setRightPinStartingPoint(rightPinStartingPoint);
+}
+
 QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit,
     const quint8& accuracy,
     const QString& iconPin,
     const QSize& iconSize,
+    const QPoint& iconAnchor,
     const QGV::GeoPos& leftPinStartingPoint,
     const QGV::GeoPos& rightPinStartingPoint
 ) : QGVWidgetMeasure(unit, accuracy)
 {
     setIconPin(iconPin);
     setIconSize(iconSize);
+    setIconAnchor(iconAnchor);
     setLeftPinStartingPoint(leftPinStartingPoint);
     setRightPinStartingPoint(rightPinStartingPoint);
 }
@@ -90,6 +103,16 @@ void QGVWidgetMeasure::setIconSize(const QSize &iconSize)
 QSize QGVWidgetMeasure::getIconSize()
 {
     return mIconSize;
+}
+
+void QGVWidgetMeasure::setIconAnchor(const QPoint &iconAnchor)
+{
+    mIconAnchor = iconAnchor;
+}
+
+QPoint QGVWidgetMeasure::getIconAnchor()
+{
+    return mIconAnchor;
 }
 
 void QGVWidgetMeasure::setLeftPinStartingPoint(const QGV::GeoPos &pos)
@@ -146,7 +169,7 @@ QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
 
-    QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), iconFlags);
+    QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(),iconFlags);
     return newIcon;
 }
 
@@ -160,6 +183,7 @@ void QGVWidgetMeasure::addPinToMap()
     rightPin = createNewPin(getRightPinStartingPoint());
 
     initializeDistanceLabel();
+    //initializePinLine();
 
     getMap()->addItem(leftPin);
     getMap()->addItem(rightPin);
@@ -192,6 +216,16 @@ void QGVWidgetMeasure::initializeDistanceLabel()
 
     getMap()->addWidget(mDistanceLabel);
 }
+
+/*void QGVWidgetMeasure::initializePinLine()
+{
+    if (getMap() == nullptr) {
+        return;
+    }
+
+    mPinLine = new QGVLine(getMap()->rootItem(), getLeftPinStartingPoint(), getRightPinStartingPoint(), Qt::blue);
+    getMap()->addItem(mPinLine);
+}*/
 
 void QGVWidgetMeasure::updateDistanceLabel(const qreal &meters)
 {
