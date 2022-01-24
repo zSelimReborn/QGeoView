@@ -200,7 +200,11 @@ void QGVWidgetMeasure::onPinMove(const QPointF &)
     const auto rightPinPos = rightPin->pos();
 
     const auto distance = QGVUtils::getDistanceBetweenGeoPos(leftPinPos, rightPinPos);
+    const auto bearing = QGVUtils::getBearingBetweenGeoPos(leftPinPos, rightPinPos);
+    const auto inverseBearing = QGVUtils::getBearingBetweenGeoPos(rightPinPos, leftPinPos);
+
     updateDistanceLabel(distance);
+    qDebug() << "Bearing: " << bearing << "° | Second Bearing: " << inverseBearing << "°";
 }
 
 void QGVWidgetMeasure::initializeDistanceLabel()
