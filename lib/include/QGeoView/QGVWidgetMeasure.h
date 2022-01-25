@@ -6,7 +6,7 @@
 
 class QGVIcon;
 class QGVBallon;
-//class QGVLine;
+class QGVLine;
 
 class QGV_LIB_DECL QGVWidgetMeasure : public QGVWidget
 {
@@ -64,6 +64,16 @@ public:
     void setBallonTextPadding(const int&);
     int getBallonTextPadding();
 
+    void setLineColor(const QColor&);
+    QColor getLineColor();
+
+    void setLineWidth(const quint16&);
+    quint16 getLineWidth();
+
+    void showPinLine();
+    void hidePinLine();
+    bool shouldShowPinLine();
+
     void addPinToMap();
 private:
     QGVIcon* createNewPin(const QGV::GeoPos&);
@@ -78,8 +88,9 @@ private:
 
     void updateBallons(const qreal&, const qreal&, const qreal&);
     void moveBallons();
+    void moveLine();
 
-    //void initializePinLine();
+    void initializePinLine();
 
 private:
     // Widget functionality
@@ -105,7 +116,10 @@ private:
     QColor mBallonTextColor;
     int mBallonTextPadding;
 
-    //QGVLine* mPinLine;
+    // Line settings
+    QGVLine* mPinLine;
+    QColor mLineColor;
+    quint16 mLineWidth;
 };
 
 #endif // QGVWIDGETMEASURE_H

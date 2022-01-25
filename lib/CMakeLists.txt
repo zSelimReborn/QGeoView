@@ -38,7 +38,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVUtils.h
     include/QGeoView/QGVIcon.h
     include/QGeoView/QGVBallon.h
-    #include/QGeoView/QGVLine.h
+    include/QGeoView/QGVLine.h
     include/QGeoView/QGVWidgetMeasure.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
@@ -65,7 +65,7 @@ add_library(qgeoview SHARED
     src/QGVUtils.cpp
     src/QGVIcon.cpp
     src/QGVBallon.cpp
-    #src/QGVLine.cpp
+    src/QGVLine.cpp
     src/QGVWidgetMeasure.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     )

@@ -138,5 +138,8 @@ void QGVBallon::move(const QGV::GeoPos& newPos)
     const QPointF rectPos = mProjAnchor - rectAnchor;
 
     mProjRect = QRectF(rectPos, mProjRect.size());
+
+    resetBoundary();
     refresh();
+    repaint();
 }

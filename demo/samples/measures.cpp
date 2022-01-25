@@ -47,8 +47,11 @@ void MeasuresDemo::onInit()
     mWidgetMeasure->setBallonBackgroundColor(ballonBackground);
     mWidgetMeasure->setBallonTextColor(ballonText);
     mWidgetMeasure->setBallonTextPadding(7);
+    mWidgetMeasure->setLineColor(Qt::red);
 
     mWidgetMeasure->addPinToMap();
+
+    // mWidgetMeasure->hidePinLine();
     selector()->selectAll();
 }
 

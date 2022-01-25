@@ -1,7 +1,7 @@
 #include "QGVWidgetMeasure.h"
 #include "QGVIcon.h"
 #include "QGVUtils.h"
-//#include "QGVLine.h"
+#include "QGVLine.h"
 #include "QGVBallon.h"
 
 #include <QHBoxLayout>
@@ -21,7 +21,9 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mBallonValueSeparator("|"),
     mBallonBackgroundColor(Qt::blue),
     mBallonTextColor(Qt::white),
-    mBallonTextPadding(5)
+    mBallonTextPadding(5),
+    mLineColor(Qt::blue),
+    mLineWidth(1500)
 {
     setMouseTracking(true);
     setAnchor(QPoint(10, 10), { Qt::LeftEdge, Qt::TopEdge });
@@ -198,18 +200,54 @@ int QGVWidgetMeasure::getBallonTextPadding()
     return mBallonTextPadding;
 }
 
+void QGVWidgetMeasure::setLineColor(const QColor& lineColor)
+{
+    mLineColor = lineColor;
+}
+
+QColor QGVWidgetMeasure::getLineColor()
+{
+    return mLineColor;
+}
+
+void QGVWidgetMeasure::setLineWidth(const quint16& lineWidth)
+{
+    mLineWidth = lineWidth;
+}
+
+quint16 QGVWidgetMeasure::getLineWidth()
+{
+    return mLineWidth;
+}
+
+void QGVWidgetMeasure::showPinLine()
+{
+    if (mPinLine != nullptr) { mPinLine->showLine(); }
+}
+
+void QGVWidgetMeasure::hidePinLine()
+{
+    if (mPinLine != nullptr) { mPinLine->hideLine(); }
+}
+
+bool QGVWidgetMeasure::shouldShowPinLine()
+{
+    if (mPinLine != nullptr) { return mPinLine->shouldShowLine(); }
+    return false;
+}
+
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
 
     QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(), iconFlags);
+    newIcon->setZValue(20);
+
     return newIcon;
 }
 
 QGVBallon* QGVWidgetMeasure::createNewBallon(const QGV::GeoPos& pos)
 {
-    // const auto adjustedGeoPos = adjustPosForBallon(pos);
-
     const int extraMargin = 20;
 
     QGVBallon* newBallon = new QGVBallon(getMap()->rootItem(), pos, getDistanceLabelPrefix());
@@ -217,6 +255,7 @@ QGVBallon* QGVWidgetMeasure::createNewBallon(const QGV::GeoPos& pos)
     newBallon->setBallonTextColor(getBallonTextColor());
     newBallon->setBallonTextPadding(getBallonTextPadding());
     newBallon->setMarginBottom(getIconSize().height() + extraMargin);
+    newBallon->setZValue(30);
 
     return newBallon;
 }
@@ -234,13 +273,13 @@ void QGVWidgetMeasure::addPinToMap()
     rightBallon = createNewBallon(getRightPinStartingPoint());
     rightBallon->hideBallon();
 
-    //initializePinLine();
-
     getMap()->addItem(leftPin);
     getMap()->addItem(rightPin);
 
     getMap()->addItem(leftBallon);
     getMap()->addItem(rightBallon);
+
+    initializePinLine();
 
     connect(leftPin, &QGVIcon::onMove, this, &QGVWidgetMeasure::onPinMove);
     connect(rightPin, &QGVIcon::onMove, this, &QGVWidgetMeasure::onPinMove);
@@ -262,6 +301,7 @@ void QGVWidgetMeasure::onPinMove(const QPointF &)
 
     updateBallons(distance, bearing, inverseBearing);
     moveBallons();
+    moveLine();
 }
 
 void QGVWidgetMeasure::onLeftPinStartMove(const QPointF &)
@@ -301,15 +341,26 @@ void QGVWidgetMeasure::moveBallons()
     }
 }
 
-/*void QGVWidgetMeasure::initializePinLine()
+void QGVWidgetMeasure::moveLine()
+{
+    const auto leftPinPos = (leftPin->pos());
+    const auto rightPinPos = (rightPin->pos());
+
+    mPinLine->move(leftPinPos, rightPinPos);
+}
+
+void QGVWidgetMeasure::initializePinLine()
 {
     if (getMap() == nullptr) {
         return;
     }
 
-    mPinLine = new QGVLine(getMap()->rootItem(), getLeftPinStartingPoint(), getRightPinStartingPoint(), Qt::blue);
+    mPinLine = new QGVLine(getMap()->rootItem(), getLeftPinStartingPoint(), getRightPinStartingPoint(), getLineColor());
+    mPinLine->setWidth(getLineWidth());
+    mPinLine->setZValue(10);
+
     getMap()->addItem(mPinLine);
-}*/
+}
 
 QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
 {
