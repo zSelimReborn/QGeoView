@@ -1,8 +1,8 @@
 #include "QGVWidgetMeasure.h"
 #include "QGVIcon.h"
 #include "QGVUtils.h"
-#include "QGVWidgetText.h"
 //#include "QGVLine.h"
+#include "QGVBallon.h"
 
 #include <QHBoxLayout>
 #include <QPaintEvent>
@@ -17,8 +17,11 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mLeftPinStartingPoint(0, 0),
     mRightPinStartingPoint(0, 1),
     mDistanceLabelPrefix("Distance: "),
-    mDistanceAnchorEdges({Qt::TopEdge, Qt::LeftEdge}),
-    mDistanceLabelAnchor(5, 5)
+    mBearingLabelPrefix("Bearing: "),
+    mBallonValueSeparator("|"),
+    mBallonBackgroundColor(Qt::blue),
+    mBallonTextColor(Qt::white),
+    mBallonTextPadding(5)
 {
     setMouseTracking(true);
     setAnchor(QPoint(10, 10), { Qt::LeftEdge, Qt::TopEdge });
@@ -145,32 +148,77 @@ QString QGVWidgetMeasure::getDistanceLabelPrefix()
     return mDistanceLabelPrefix;
 }
 
-void QGVWidgetMeasure::setDistanceAnchorEdges(const QSet<Qt::Edge>& edges)
+void QGVWidgetMeasure::setBearingLabelPrefix(const QString& bearingLabelPrefix)
 {
-    mDistanceAnchorEdges = edges;
+    mBearingLabelPrefix = bearingLabelPrefix;
 }
 
-QSet<Qt::Edge> QGVWidgetMeasure::getDistanceAnchorEdges()
+QString QGVWidgetMeasure::getBearingLabelPrefix()
 {
-    return mDistanceAnchorEdges;
+    return mBearingLabelPrefix;
 }
 
-void QGVWidgetMeasure::setDistanceLabelAnchor(const QPoint& anchor)
+void QGVWidgetMeasure::setBallonValueSeparator(const QString& ballonValueSeparator)
 {
-    mDistanceLabelAnchor = anchor;
+    mBallonValueSeparator = ballonValueSeparator;
 }
 
-QPoint QGVWidgetMeasure::getDistanceLabelAnchor()
+QString QGVWidgetMeasure::getBallonValueSeparator()
 {
-    return mDistanceLabelAnchor;
+    return mBallonValueSeparator;
+}
+
+void QGVWidgetMeasure::setBallonBackgroundColor(const QColor& background)
+{
+    mBallonBackgroundColor = background;
+}
+
+QColor QGVWidgetMeasure::getBallonBackgroundColor()
+{
+    return mBallonBackgroundColor;
+}
+
+void QGVWidgetMeasure::setBallonTextColor(const QColor& textColor)
+{
+    mBallonTextColor = textColor;
+}
+
+QColor QGVWidgetMeasure::getBallonTextColor()
+{
+    return mBallonTextColor;
+}
+
+void QGVWidgetMeasure::setBallonTextPadding(const int& textPadding)
+{
+    mBallonTextPadding = textPadding;
+}
+
+int QGVWidgetMeasure::getBallonTextPadding()
+{
+    return mBallonTextPadding;
 }
 
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
 
-    QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(),iconFlags);
+    QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(), iconFlags);
     return newIcon;
+}
+
+QGVBallon* QGVWidgetMeasure::createNewBallon(const QGV::GeoPos& pos)
+{
+    // const auto adjustedGeoPos = adjustPosForBallon(pos);
+
+    const int extraMargin = 20;
+
+    QGVBallon* newBallon = new QGVBallon(getMap()->rootItem(), pos, getDistanceLabelPrefix());
+    newBallon->setBallonBackground(getBallonBackgroundColor());
+    newBallon->setBallonTextColor(getBallonTextColor());
+    newBallon->setBallonTextPadding(getBallonTextPadding());
+    newBallon->setMarginBottom(getIconSize().height() + extraMargin);
+
+    return newBallon;
 }
 
 void QGVWidgetMeasure::addPinToMap()
@@ -182,14 +230,23 @@ void QGVWidgetMeasure::addPinToMap()
     leftPin = createNewPin(getLeftPinStartingPoint());
     rightPin = createNewPin(getRightPinStartingPoint());
 
-    initializeDistanceLabel();
+    leftBallon = createNewBallon(getLeftPinStartingPoint());
+    rightBallon = createNewBallon(getRightPinStartingPoint());
+    rightBallon->hideBallon();
+
     //initializePinLine();
 
     getMap()->addItem(leftPin);
     getMap()->addItem(rightPin);
 
+    getMap()->addItem(leftBallon);
+    getMap()->addItem(rightBallon);
+
     connect(leftPin, &QGVIcon::onMove, this, &QGVWidgetMeasure::onPinMove);
     connect(rightPin, &QGVIcon::onMove, this, &QGVWidgetMeasure::onPinMove);
+
+    connect(leftPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onLeftPinStartMove);
+    connect(rightPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onRightPinStartMove);
 
     onPinMove(QPointF());
 }
@@ -203,22 +260,45 @@ void QGVWidgetMeasure::onPinMove(const QPointF &)
     const auto bearing = QGVUtils::getBearingBetweenGeoPos(leftPinPos, rightPinPos);
     const auto inverseBearing = QGVUtils::getBearingBetweenGeoPos(rightPinPos, leftPinPos);
 
-    updateDistanceLabel(distance);
-    qDebug() << "Bearing: " << bearing << "° | Second Bearing: " << inverseBearing << "°";
+    updateBallons(distance, bearing, inverseBearing);
+    moveBallons();
 }
 
-void QGVWidgetMeasure::initializeDistanceLabel()
+void QGVWidgetMeasure::onLeftPinStartMove(const QPointF &)
 {
-    if (getMap() == nullptr) {
-        return;
+    leftBallon->showBallon();
+    rightBallon->hideBallon();
+}
+
+void QGVWidgetMeasure::onRightPinStartMove(const QPointF &)
+{
+    leftBallon->hideBallon();
+    rightBallon->showBallon();
+}
+
+void QGVWidgetMeasure::updateBallons(const qreal& distanceMeters, const qreal& bearingDegree, const qreal& inverseBearingDegree)
+{
+    const auto distanceLabel = getDistanceLabel(distanceMeters);
+    const auto leftBallonText = distanceLabel + " " + getBallonValueSeparator() + " " + getBearingLabel(bearingDegree);
+    const auto rightBallonText = distanceLabel + " " + getBallonValueSeparator() + " "+ getBearingLabel(inverseBearingDegree);
+
+    leftBallon->setBallonText(leftBallonText);
+    rightBallon->setBallonText(rightBallonText);
+
+    leftBallon->repaint();
+    rightBallon->repaint();
+}
+
+void QGVWidgetMeasure::moveBallons()
+{
+    const auto leftPinPos = (leftPin->pos());
+    const auto rightPinPos = (rightPin->pos());
+
+    if (leftBallon->shouldShowBallon()) {
+        leftBallon->move(leftPinPos);
+    } else if (rightBallon->shouldShowBallon()) {
+        rightBallon->move(rightPinPos);
     }
-
-    mDistanceLabel = new QGVWidgetText();
-    mDistanceLabel->setText(getDistanceLabelPrefix());
-    const auto edges = getDistanceAnchorEdges();
-    mDistanceLabel->setAnchor(getDistanceLabelAnchor(), edges);
-
-    getMap()->addWidget(mDistanceLabel);
 }
 
 /*void QGVWidgetMeasure::initializePinLine()
@@ -231,7 +311,7 @@ void QGVWidgetMeasure::initializeDistanceLabel()
     getMap()->addItem(mPinLine);
 }*/
 
-void QGVWidgetMeasure::updateDistanceLabel(const qreal &meters)
+QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
 {
     QString result;
     double miles, nauticalMiles = 0.f;
@@ -264,5 +344,13 @@ void QGVWidgetMeasure::updateDistanceLabel(const qreal &meters)
         break;
     }
 
-    mDistanceLabel->setText(result);
+    return result;
+}
+
+QString QGVWidgetMeasure::getBearingLabel(const qreal& degrees)
+{
+    QString result;
+
+    result = tr("%1: %2°").arg(getBearingLabelPrefix()).arg(QString::number(static_cast<double>(degrees), 'f', 0));
+    return result;
 }

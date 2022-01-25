@@ -38,7 +38,16 @@ void MeasuresDemo::onInit()
         selector()->addItem(name, std::bind(&MeasuresDemo::setSelected, this, widget, std::placeholders::_1));
     }
 
+    const auto ballonBackground = QColor::fromRgb(0, 62, 126);
+    const auto ballonText = Qt::white;
+
     mWidgetMeasure->setDistanceLabelPrefix("Distanza: ");
+    mWidgetMeasure->setBearingLabelPrefix("Rotta: ");
+    mWidgetMeasure->setBallonValueSeparator("-");
+    mWidgetMeasure->setBallonBackgroundColor(ballonBackground);
+    mWidgetMeasure->setBallonTextColor(ballonText);
+    mWidgetMeasure->setBallonTextPadding(7);
+
     mWidgetMeasure->addPinToMap();
     selector()->selectAll();
 }

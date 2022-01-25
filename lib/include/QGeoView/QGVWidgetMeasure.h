@@ -5,7 +5,7 @@
 #include "utils/DistanceUnits.hpp"
 
 class QGVIcon;
-class QGVWidgetText;
+class QGVBallon;
 //class QGVLine;
 
 class QGV_LIB_DECL QGVWidgetMeasure : public QGVWidget
@@ -49,39 +49,61 @@ public:
     void setDistanceLabelPrefix(const QString&);
     QString getDistanceLabelPrefix();
 
-    void setDistanceAnchorEdges(const QSet<Qt::Edge>&);
-    QSet<Qt::Edge> getDistanceAnchorEdges();
+    void setBearingLabelPrefix(const QString&);
+    QString getBearingLabelPrefix();
 
-    void setDistanceLabelAnchor(const QPoint&);
-    QPoint getDistanceLabelAnchor();
+    void setBallonValueSeparator(const QString&);
+    QString getBallonValueSeparator();
+
+    void setBallonBackgroundColor(const QColor&);
+    QColor getBallonBackgroundColor();
+
+    void setBallonTextColor(const QColor&);
+    QColor getBallonTextColor();
+
+    void setBallonTextPadding(const int&);
+    int getBallonTextPadding();
 
     void addPinToMap();
 private:
     QGVIcon* createNewPin(const QGV::GeoPos&);
+    QGVBallon* createNewBallon(const QGV::GeoPos&);
 
-    void updateDistanceLabel(const qreal&);
+    QString getDistanceLabel(const qreal&);
+    QString getBearingLabel(const qreal&);
 
     void onPinMove(const QPointF&);
+    void onLeftPinStartMove(const QPointF&);
+    void onRightPinStartMove(const QPointF&);
 
-    void initializeDistanceLabel();
+    void updateBallons(const qreal&, const qreal&, const qreal&);
+    void moveBallons();
+
     //void initializePinLine();
 
 private:
+    // Widget functionality
     QGVIcon* leftPin;
     QGVIcon* rightPin;
     DistanceUnits mUnit;
     quint8 mAccuracy;
+    QGVBallon* leftBallon;
+    QGVBallon* rightBallon;
 
+    // Pin settings
     QString mIconPin;
     QSize mIconSize;
     QPoint mIconAnchor;
     QGV::GeoPos mLeftPinStartingPoint;
     QGV::GeoPos mRightPinStartingPoint;
 
-    QGVWidgetText* mDistanceLabel;
+    // Ballon settings
     QString mDistanceLabelPrefix;
-    QSet<Qt::Edge> mDistanceAnchorEdges;
-    QPoint mDistanceLabelAnchor;
+    QString mBearingLabelPrefix;
+    QString mBallonValueSeparator;
+    QColor mBallonBackgroundColor;
+    QColor mBallonTextColor;
+    int mBallonTextPadding;
 
     //QGVLine* mPinLine;
 };
