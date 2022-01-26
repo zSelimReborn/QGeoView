@@ -91,7 +91,6 @@ void QGVLine::projPaint(QPainter* painter)
     if (!shouldShowLine()) {
         return;
     }
-
     const auto firstProj = getMap()->getProjection()->geoToProj(mGeoFirstPoint);
     const auto secondProj = getMap()->getProjection()->geoToProj(mGeoSecondPoint);
 

@@ -23,6 +23,8 @@ void MeasuresDemo::onInit()
     /*
      * List of available widgets.
      */
+
+    // Rome and Naples as starting positions of the pins
     mWidgetMeasure = new QGVWidgetMeasure(QGV::GeoPos(41.9027835, 12.4963655), QGV::GeoPos(40.851775, 14.268124));
     QList<QPair<QString, QGVWidget*>> widgets = {
         { "QGVWidgetMeasure",  mWidgetMeasure}

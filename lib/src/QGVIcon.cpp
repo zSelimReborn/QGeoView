@@ -46,6 +46,8 @@ QPoint QGVIcon::anchor()
 void QGVIcon::projOnObjectStartMove(const QPointF& pos)
 {
     QGVImage::projOnObjectStartMove(pos);
+
+    // Emit signal only if icon is movable
     if (isFlag(QGV::ItemFlag::Movable)) {
         emit onStartMove(pos);
     }
@@ -61,6 +63,7 @@ void QGVIcon::projOnObjectMovePos(const QPointF& pos)
         refresh();
     }
 
+    // Emit signal only if icon is movable
     if (isFlag(QGV::ItemFlag::Movable)) {
         emit onMove(pos);
     }
@@ -69,6 +72,8 @@ void QGVIcon::projOnObjectMovePos(const QPointF& pos)
 void QGVIcon::projOnObjectStopMove(const QPointF& pos)
 {
     QGVImage::projOnObjectStopMove(pos);
+
+    // Emit signal only if icon is movable
     if (isFlag(QGV::ItemFlag::Movable)) {
         emit onStopMove(pos);
     }

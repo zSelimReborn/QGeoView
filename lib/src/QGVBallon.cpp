@@ -86,6 +86,7 @@ void QGVBallon::onProjection(QGVMap* geoMap)
 {
     QGVDrawItem::onProjection(geoMap);
     mProjAnchor = geoMap->getProjection()->geoToProj(mGeoPos);
+    // Hardcoded starting rect
     mProjRect = QRectF(mProjAnchor, QSize(40, 20));
 }
 
@@ -103,21 +104,25 @@ void QGVBallon::projPaint(QPainter* painter)
     }
 
     // Ballon size
+    // Create rect to fit the text
     const auto fontMetrics = painter->fontMetrics();
     const auto ballonRect = fontMetrics.boundingRect(getBallonText());
 
+    // Center the rect
     const auto rectAnchor = QPointF(ballonRect.width() / 2, ballonRect.height() / 2 + getMarginBottom());
     const QPointF basePos = getMap()->getProjection()->geoToProj(mGeoPos);
     const QPointF rectPos = basePos - rectAnchor;
 
+    // Padding management
     mProjRect = QRectF(rectPos.x(), rectPos.y(), ballonRect.width() + getBallonTextPadding(), ballonRect.height() + getBallonTextPadding());
 
-    // Ballon rect
+    // Ballon rect drawing
     painter->setPen(QPen(QBrush(getBallonBackground()), 1));
     painter->setBrush(QBrush(getBallonBackground()));
     painter->drawRoundedRect(mProjRect, 5, 5);
 
-    // Ballon text
+    // Ballon text drawing
+    // Center the text plus padding
     const auto textAnchor = QPointF(projAnchor().x() + getBallonTextPadding(), projAnchor().y() + mProjRect.height() - 5);
     painter->setPen(QPen(QBrush(getBallonTextColor()), 1));
     painter->setBrush(QBrush(getBallonTextColor()));
@@ -134,6 +139,7 @@ void QGVBallon::move(const QGV::GeoPos& newPos)
     mGeoPos = newPos;
     mProjAnchor = getMap()->getProjection()->geoToProj(mGeoPos);
 
+    // Center the rect to the new position (with same width and height)
     const auto rectAnchor = QPointF(mProjRect.width() / 2, mProjRect.height() / 2 + getMarginBottom());
     const QPointF rectPos = mProjAnchor - rectAnchor;
 
