@@ -50,6 +50,7 @@ void MeasuresDemo::onInit()
     mWidgetMeasure->setBallonTextColor(ballonText);
     mWidgetMeasure->setBallonTextPadding(7);
     mWidgetMeasure->setLineColor(Qt::red);
+    mWidgetMeasure->setIconPinMovement(":/resources/pin-icon-highlight.png");
 
     mWidgetMeasure->addPinToMap();
 

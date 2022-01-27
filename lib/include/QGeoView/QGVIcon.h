@@ -44,6 +44,18 @@ public:
     QPoint anchor();
 
     /**
+     * @brief setIconMovement change icon image during movement.
+     * Parameters: new image
+     */
+    void setIconMovement(const QString&);
+
+    /**
+     * @brief getIconMovement returns icon url to use during movement
+     * @return QString
+     */
+    QString getIconMovement();
+
+    /**
      * @brief projOnObjectStartMove method inherited from QGVItem, it is called when the icon starts moving.
      * Parameters: point where the movement starts.
      */
@@ -79,6 +91,11 @@ Q_SIGNALS:
      * Parameters: point where the movement stops.
      */
     void onStopMove(const QPointF&);
+
+private:
+    void changeDefaultIcon();
+    void changeMovementIcon();
+
 private:
     /**
      * @brief mSize size of the icon
@@ -89,6 +106,26 @@ private:
      * @brief mAnchor anchor of the icon
      */
     QPoint mAnchor;
+
+    /**
+     * @brief mIconDefault default icon url
+     */
+    QString mIconDefaultSrc;
+
+    /**
+     * @brief mIconMovement icon url during movement
+     */
+    QString mIconMovementSrc;
+
+    /**
+     * @brief mIconDefault default icon object
+     */
+    QImage mIconDefault;
+
+    /**
+     * @brief mIconMovement icon object during movement
+     */
+    QImage mIconMovement;
 };
 
 #endif // QGVICON_H

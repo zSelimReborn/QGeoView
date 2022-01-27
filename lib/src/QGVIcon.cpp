@@ -2,15 +2,18 @@
 
 
 QGVIcon::QGVIcon(QGVItem* parent, const QGV::GeoPos& geoPos, const QString& iconPath, const QSize& iconSize, const QGV::ItemFlags& iconFlags) :
-    mSize(iconSize), mAnchor(mSize.width() / 2, mSize.height() / 2)
+    mSize(iconSize), mAnchor(mSize.width() / 2, mSize.height() / 2),
+    mIconDefaultSrc(iconPath), mIconMovementSrc(iconPath)
 {
     setParent(parent);
     setFlags(iconFlags);
 
     setGeometry(geoPos, mSize, mAnchor);
 
-    const QImage icon(iconPath);
-    loadImage(icon);
+    mIconDefault = QImage(mIconDefaultSrc);
+    mIconMovement = QImage(mIconMovementSrc);
+
+    loadImage(mIconDefault);
 
     refresh();
 }
@@ -49,6 +52,7 @@ void QGVIcon::projOnObjectStartMove(const QPointF& pos)
 
     // Emit signal only if icon is movable
     if (isFlag(QGV::ItemFlag::Movable)) {
+        changeMovementIcon();
         emit onStartMove(pos);
     }
 }
@@ -75,6 +79,42 @@ void QGVIcon::projOnObjectStopMove(const QPointF& pos)
 
     // Emit signal only if icon is movable
     if (isFlag(QGV::ItemFlag::Movable)) {
+        changeDefaultIcon();
         emit onStopMove(pos);
     }
+}
+
+void QGVIcon::setIconMovement(const QString& iconPin)
+{
+    mIconMovementSrc = iconPin;
+    mIconMovement = QImage(mIconMovementSrc);
+}
+
+QString QGVIcon::getIconMovement()
+{
+    return mIconMovementSrc;
+}
+
+void QGVIcon::changeDefaultIcon()
+{
+    if (mIconDefault.isNull()) {
+        return;
+    }
+
+    loadImage(mIconDefault);
+
+    refresh();
+    repaint();
+}
+
+void QGVIcon::changeMovementIcon()
+{
+    if (mIconMovement.isNull()) {
+        return;
+    }
+
+    loadImage(mIconMovement);
+
+    refresh();
+    repaint();
 }

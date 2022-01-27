@@ -85,6 +85,18 @@ public:
     QString getIconPin();
 
     /**
+     * @brief setIconPinMovement change pin icon during movement.
+     * Parameters: new image url
+     */
+    void setIconPinMovement(const QString&);
+
+    /**
+     * @brief getIconPinMovement returns current pin icon used during movement
+     * @return QString
+     */
+    QString getIconPinMovement();
+
+    /**
      * @brief setIconSize change pin icon size.
      * Parameters: new icon size
      */
@@ -351,6 +363,11 @@ private:
      * @brief mIconPin image url for the pins
      */
     QString mIconPin;
+
+    /**
+     * @brief mIconPinMovement image url for the pins during movement
+     */
+    QString mIconPinMovement;
 
     /**
      * @brief mIconSize pins size

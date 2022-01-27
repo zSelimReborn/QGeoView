@@ -12,6 +12,7 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mUnit(DistanceUnits::Kilometers),
     mAccuracy(2),
     mIconPin(":/resources/pin-icon.png"),
+    mIconPinMovement(mIconPin),
     mIconSize(32, 32),
     mIconAnchor(mIconSize.width() / 2, mIconSize.height()),
     mLeftPinStartingPoint(0, 0),
@@ -64,6 +65,7 @@ QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit,
 ) : QGVWidgetMeasure(unit, accuracy)
 {
     setIconPin(iconPin);
+    setIconPinMovement(iconPin);
     setIconSize(iconSize);
     setIconAnchor(iconAnchor);
     setLeftPinStartingPoint(leftPinStartingPoint);
@@ -98,6 +100,16 @@ void QGVWidgetMeasure::setIconPin(const QString &iconPin)
 QString QGVWidgetMeasure::getIconPin()
 {
     return mIconPin;
+}
+
+void QGVWidgetMeasure::setIconPinMovement(const QString& iconPin)
+{
+    mIconPinMovement = iconPin;
+}
+
+QString QGVWidgetMeasure::getIconPinMovement()
+{
+    return mIconPinMovement;
 }
 
 void QGVWidgetMeasure::setIconSize(const QSize &iconSize)
@@ -238,24 +250,26 @@ bool QGVWidgetMeasure::shouldShowPinLine()
 
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
+    const int pinZValue = 20;
     auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
 
     QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(), iconFlags);
-    newIcon->setZValue(20);
+    newIcon->setIconMovement(getIconPinMovement());
+    newIcon->setZValue(pinZValue);
 
     return newIcon;
 }
 
 QGVBallon* QGVWidgetMeasure::createNewBallon(const QGV::GeoPos& pos)
 {
-    const int extraMargin = 20;
+    const int extraMargin = 20, ballonZValue = 30;
 
     QGVBallon* newBallon = new QGVBallon(getMap()->rootItem(), pos, getDistanceLabelPrefix());
     newBallon->setBallonBackground(getBallonBackgroundColor());
     newBallon->setBallonTextColor(getBallonTextColor());
     newBallon->setBallonTextPadding(getBallonTextPadding());
     newBallon->setMarginBottom(getIconSize().height() + extraMargin);
-    newBallon->setZValue(30);
+    newBallon->setZValue(ballonZValue);
 
     return newBallon;
 }
@@ -355,9 +369,11 @@ void QGVWidgetMeasure::initializePinLine()
         return;
     }
 
+    const int lineZValue = 10;
+
     mPinLine = new QGVLine(getMap()->rootItem(), getLeftPinStartingPoint(), getRightPinStartingPoint(), getLineColor());
     mPinLine->setWidth(getLineWidth());
-    mPinLine->setZValue(10);
+    mPinLine->setZValue(lineZValue);
 
     getMap()->addItem(mPinLine);
 }
@@ -366,6 +382,9 @@ QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
 {
     QString result;
     double miles, nauticalMiles = 0.f;
+
+    const double milesFactor = 1609.0f;
+    const double nauticalMilesFactor = 1852.0f;
 
     switch (mUnit) {
         case DistanceUnits::Kilometers:
@@ -376,7 +395,7 @@ QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
             }
         break;
         case DistanceUnits::Miles:
-            miles = meters / 1609.0;
+            miles = meters / milesFactor;
 
             if (miles > 1) {
                 result = tr("%1: %2 mi").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(miles), 'f', mAccuracy));
@@ -385,7 +404,7 @@ QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
             }
         break;
         case DistanceUnits::NauticalMiles:
-            nauticalMiles = meters / 1852.0;
+            nauticalMiles = meters / nauticalMilesFactor;
 
             if (nauticalMiles > 1) {
                 result = tr("%1: %2 nm").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
