@@ -310,10 +310,11 @@ void QGVWidgetMeasure::onPinMove(const QPointF &)
     const auto rightPinPos = rightPin->pos();
 
     const auto distance = QGVUtils::getDistanceBetweenGeoPos(leftPinPos, rightPinPos);
-    const auto bearing = QGVUtils::getBearingBetweenGeoPos(leftPinPos, rightPinPos);
-    const auto inverseBearing = QGVUtils::getBearingBetweenGeoPos(rightPinPos, leftPinPos);
 
-    updateBallons(distance, bearing, inverseBearing);
+    const auto leftBallonBearing = QGVUtils::getBearingBetweenGeoPos(rightPinPos, leftPinPos);
+    const auto rightBallonBearing = QGVUtils::getBearingBetweenGeoPos(leftPinPos, rightPinPos);
+
+    updateBallons(distance, leftBallonBearing, rightBallonBearing);
     moveBallons();
     moveLine();
 }
@@ -330,11 +331,11 @@ void QGVWidgetMeasure::onRightPinStartMove(const QPointF &)
     rightBallon->showBallon();
 }
 
-void QGVWidgetMeasure::updateBallons(const qreal& distanceMeters, const qreal& bearingDegree, const qreal& inverseBearingDegree)
+void QGVWidgetMeasure::updateBallons(const qreal& distanceMeters, const qreal& leftBallonBearing, const qreal& rightBallonBearing)
 {
     const auto distanceLabel = getDistanceLabel(distanceMeters);
-    const auto leftBallonText = distanceLabel + " " + getBallonValueSeparator() + " " + getBearingLabel(bearingDegree);
-    const auto rightBallonText = distanceLabel + " " + getBallonValueSeparator() + " "+ getBearingLabel(inverseBearingDegree);
+    const auto leftBallonText = distanceLabel + " " + getBallonValueSeparator() + " " + getBearingLabel(leftBallonBearing);
+    const auto rightBallonText = distanceLabel + " " + getBallonValueSeparator() + " "+ getBearingLabel(rightBallonBearing);
 
     leftBallon->setBallonText(leftBallonText);
     rightBallon->setBallonText(rightBallonText);

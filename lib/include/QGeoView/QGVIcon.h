@@ -56,6 +56,12 @@ public:
     QString getIconMovement();
 
     /**
+     * @brief isMoving returns true if the icon is moving, false otherwise
+     * @return bool
+     */
+    bool isMoving();
+
+    /**
      * @brief projOnObjectStartMove method inherited from QGVItem, it is called when the icon starts moving.
      * Parameters: point where the movement starts.
      */
@@ -93,8 +99,17 @@ Q_SIGNALS:
     void onStopMove(const QPointF&);
 
 private:
+    /**
+     * @brief changeDefaultIcon change the icon to the default icon
+     */
     void changeDefaultIcon();
+
+    /**
+     * @brief changeMovementIcon change the icon to the image for the movement
+     */
     void changeMovementIcon();
+
+    void setIsMoving(const bool&);
 
 private:
     /**
@@ -126,6 +141,11 @@ private:
      * @brief mIconMovement icon object during movement
      */
     QImage mIconMovement;
+
+    /**
+     * @brief bIsMoving
+     */
+    bool bIsMoving;
 };
 
 #endif // QGVICON_H
