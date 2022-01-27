@@ -40,17 +40,26 @@ void MeasuresDemo::onInit()
         selector()->addItem(name, std::bind(&MeasuresDemo::setSelected, this, widget, std::placeholders::_1));
     }
 
+    // Widget configuration
+    const auto distanceLabelPrefix = QString("Distanza: ");
+    const auto bearingLabelPrefix = QString("Rotta: ");
+    const auto ballonValueSeparator = QString("-");
     const auto ballonBackground = QColor::fromRgb(0, 62, 126);
     const auto ballonText = Qt::white;
+    const auto ballonTextPadding = 7;
+    const auto lineColor = Qt::red;
+    const auto lineWidth = 250;
+    const auto iconPinMovement = QString(":/resources/pin-icon-highlight.png");
 
-    mWidgetMeasure->setDistanceLabelPrefix("Distanza: ");
-    mWidgetMeasure->setBearingLabelPrefix("Rotta: ");
-    mWidgetMeasure->setBallonValueSeparator("-");
+    mWidgetMeasure->setDistanceLabelPrefix(distanceLabelPrefix);
+    mWidgetMeasure->setBearingLabelPrefix(bearingLabelPrefix);
+    mWidgetMeasure->setBallonValueSeparator(ballonValueSeparator);
     mWidgetMeasure->setBallonBackgroundColor(ballonBackground);
     mWidgetMeasure->setBallonTextColor(ballonText);
-    mWidgetMeasure->setBallonTextPadding(7);
-    mWidgetMeasure->setLineColor(Qt::red);
-    mWidgetMeasure->setIconPinMovement(":/resources/pin-icon-highlight.png");
+    mWidgetMeasure->setBallonTextPadding(ballonTextPadding);
+    mWidgetMeasure->setLineColor(lineColor);
+    mWidgetMeasure->setLineWidth(lineWidth);
+    mWidgetMeasure->setIconPinMovement(iconPinMovement);
 
     mWidgetMeasure->addPinToMap();
 
