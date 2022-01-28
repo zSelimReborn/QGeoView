@@ -7,6 +7,7 @@
 class QGVIcon;
 class QGVBallon;
 class QGVLine;
+class QToolButton;
 
 /**
  * @brief The QGVWidgetMeasure class is a widget which places two pins (connected by a line) with two ballons above them.
@@ -254,13 +255,60 @@ public:
      * @brief shouldShowPinLine returns true if the line has to be shown, false otherwise
      * @return bool
      */
-    bool shouldShowPinLine();
+    bool shouldShowPinLine();    
+
+    void setWidgetAnchorEdges(const QSet<Qt::Edge>&);
+
+    QSet<Qt::Edge> getWidgetAnchorEdges();
 
     /**
-     * @brief addPinToMap method which add the two pins on the map, the line between them and the ballons.
-     * It also initializes the listeners for calculating the distance and the bearing. Call this after adding widget on the map.
+     * @brief setWidgetBtnIcon change btn icon.
      */
-    void addPinToMap();
+    void setWidgetBtnIcon(const QString&);
+
+    /**
+     * @brief getWidgetBtnIcon get btn icon url
+     * @return QString
+     */
+    QString getWidgetBtnIcon();
+
+    /**
+     * @brief setWidgetBtnSize change main btn size
+     */
+    void setWidgetBtnSize(const QSize&);
+
+    /**
+     * @brief getWidgetBtnSize returns main btn size
+     * @return QSize
+     */
+    QSize getWidgetBtnSize();
+
+    void setBtnExternalRectColor(const QColor&);
+    void setBtnExternalBorderColor(const QColor&);
+    void setBtnInternalRectColor(const QColor&);
+    void setBtnActiveInternalRectColor(const QColor&);
+
+    QColor getBtnExternalRectColor();
+    QColor getBtnExternalBorderColor();
+    QColor getBtnInternalRectColor();
+    QColor getBtnActiveInternalRectColor();
+
+    /**
+     * @brief activateWidget method for placing items (pins, line and ballons) on map
+     */
+    void activateWidget();
+
+    /**
+     * @brief deactivateWidget method for removing items (pins, line and ballons) from map
+     */
+    void deactivateWidget();
+
+    /**
+     * @brief isActive returns true when widget is active, false otherwise
+     * @return bool
+     */
+    bool isActive();
+
 private:
     /**
      * @brief createNewPin factory method which creates a pin in a certain position with all the configuration needed.
@@ -326,6 +374,42 @@ private:
      */
     void initializePinLine();
 
+    /**
+     * @brief onWidgetBtnClick method triggered when btn is clicked. It activates or deactivates the widget
+     */
+    void onWidgetBtnClick();
+
+    /**
+     * @brief addPinToMap method which add the two pins on the map, the line between them and the ballons.
+     * It also initializes the listeners for calculating the distance and the bearing. Call this after adding widget on the map.
+     */
+    void addPinToMap();
+
+    /**
+     * @brief removePinFromMap method which remove the two pins, line and ballons from the map.
+     */
+    void removePinFromMap();
+
+    /**
+     * @brief initializeLayout method which create main widget layout
+     */
+    void initializeLayout();
+
+    /**
+     * @brief initializeWidgetButton method which create main widget button and adds it to layout
+     */
+    void initializeWidgetButton();
+
+    /**
+     * @brief refreshButton method which change button icon and size
+     */
+    void refreshWidgetButton();
+
+    /**
+     * @brief paintEvent called every frame
+     */
+    void paintEvent(QPaintEvent* event) override;
+
 private:
     // Widget functionality
     /**
@@ -357,6 +441,11 @@ private:
      * @brief rightBallon second ballon connected to the second pin
      */
     QGVBallon* rightBallon;
+
+    /**
+     * @brief bIsActive true when widget is active (pin, line and ballons on map), false otherwise (no items on map)
+     */
+    bool bIsActive;
 
     // Pin settings
     /**
@@ -435,6 +524,48 @@ private:
      * @brief mLineWidth line width
      */
     quint16 mLineWidth;
+
+    // Widget drawing settings
+
+    /**
+     * @brief mWidgetAnchorEdges anchor edges for widget
+     */
+    QSet<Qt::Edge> mWidgetAnchorEdges;
+
+    /**
+     * @brief mWidgetActivateBtn main switch button which activate or deactivate the widget
+     */
+    QToolButton* mWidgetActivateBtn;
+
+    /**
+     * @brief mWidgetBtnIcon icon url inside main button
+     */
+    QString mWidgetBtnIcon;
+
+    /**
+     * @brief mWidgetBtnSize icon size inside main button
+     */
+    QSize mWidgetBtnSize;
+
+    /**
+     * @brief mBtnExternalRectColor color of external rect around main button
+     */
+    QColor mBtnExternalRectColor;
+
+    /**
+     * @brief mBtnExternalRectBorderColor color of external border around main button
+     */
+    QColor mBtnExternalRectBorderColor;
+
+    /**
+     * @brief mBtnInternalRectColor default color of internal rect around main button
+     */
+    QColor mBtnInternalRectColor;
+
+    /**
+     * @brief mBtnActiveInternalRectColor active color of internal rect around main button
+     */
+    QColor mBtnActiveInternalRectColor;
 };
 
 #endif // QGVWIDGETMEASURE_H

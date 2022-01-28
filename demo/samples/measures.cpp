@@ -51,6 +51,24 @@ void MeasuresDemo::onInit()
     const auto lineWidth = 250;
     const auto iconPinMovement = QString(":/resources/pin-icon-highlight.png");
 
+    const auto widgetBtnIcon = iconPinMovement;
+    const auto widgetBtnSize = QSize(45, 45);
+
+    const auto widgetBtnActiveColor = QColor::fromRgb(242, 247, 250);
+
+    // How to change widget position on screen
+    /* mWidgetMeasure->setAnchor(QPoint(30, 30), mWidgetMeasure->getWidgetAnchorEdges());
+    mWidgetMeasure->setWidgetAnchorEdges({Qt::TopEdge, Qt::LeftEdge}); */
+
+    // How to change widget btn icon/size
+    // mWidgetMeasure->setWidgetBtnIcon(widgetBtnIcon);
+    mWidgetMeasure->setWidgetBtnSize(widgetBtnSize);
+
+    mWidgetMeasure->setBtnExternalBorderColor(Qt::white);
+    mWidgetMeasure->setBtnExternalRectColor(ballonBackground);
+    mWidgetMeasure->setBtnInternalRectColor(Qt::white);
+    mWidgetMeasure->setBtnActiveInternalRectColor(widgetBtnActiveColor);
+
     mWidgetMeasure->setDistanceLabelPrefix(distanceLabelPrefix);
     mWidgetMeasure->setBearingLabelPrefix(bearingLabelPrefix);
     mWidgetMeasure->setBallonValueSeparator(ballonValueSeparator);
@@ -60,8 +78,6 @@ void MeasuresDemo::onInit()
     mWidgetMeasure->setLineColor(lineColor);
     mWidgetMeasure->setLineWidth(lineWidth);
     mWidgetMeasure->setIconPinMovement(iconPinMovement);
-
-    mWidgetMeasure->addPinToMap();
 
     // mWidgetMeasure->hidePinLine();
     selector()->selectAll();

@@ -4,11 +4,13 @@
 #include "QGVLine.h"
 #include "QGVBallon.h"
 
-#include <QHBoxLayout>
 #include <QPaintEvent>
 #include <QPainter>
+#include <QHBoxLayout>
+#include <QToolButton>
 
 QGVWidgetMeasure::QGVWidgetMeasure() :
+    bIsActive(false),
     mUnit(DistanceUnits::Kilometers),
     mAccuracy(2),
     mIconPin(":/resources/pin-icon.png"),
@@ -24,12 +26,24 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mBallonTextColor(Qt::white),
     mBallonTextPadding(5),
     mLineColor(Qt::blue),
-    mLineWidth(1500)
+    mLineWidth(1500),
+    mWidgetAnchorEdges({Qt::RightEdge, Qt::TopEdge}),
+    mWidgetBtnIcon(":/resources/compass.png"),
+    mWidgetBtnSize(40, 40),
+    mBtnExternalRectColor(Qt::white),
+    mBtnExternalRectBorderColor(Qt::blue),
+    mBtnInternalRectColor(Qt::white),
+    mBtnActiveInternalRectColor(Qt::blue)
 {
-    setMouseTracking(true);
-    setAnchor(QPoint(10, 10), { Qt::LeftEdge, Qt::TopEdge });
-    setMaximumSize(QSize(100, 100));
-    setMinimumSize(QSize(100, 100));
+    setAnchor(QPoint(15, 15), mWidgetAnchorEdges);
+    /* setMaximumSize(QSize(100, 100));
+    setMinimumSize(QSize(100, 100)); */
+
+    // Layout build
+    initializeLayout();
+
+    // Crea pulsante
+    initializeWidgetButton();
 }
 
 QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit, const quint8& accuracy) :
@@ -304,6 +318,33 @@ void QGVWidgetMeasure::addPinToMap()
     onPinMove(QPointF());
 }
 
+void QGVWidgetMeasure::removePinFromMap()
+{
+    if (getMap() == nullptr) {
+        return;
+    }
+
+    if (leftPin) {
+        getMap()->removeItem(leftPin);
+    }
+
+    if (rightPin) {
+        getMap()->removeItem(rightPin);
+    }
+
+    if (leftBallon) {
+        getMap()->removeItem(leftBallon);
+    }
+
+    if (rightBallon) {
+        getMap()->removeItem(rightBallon);
+    }
+
+    if (mPinLine) {
+        getMap()->removeItem(mPinLine);
+    }
+}
+
 void QGVWidgetMeasure::onPinMove(const QPointF &)
 {
     const auto leftPinPos = leftPin->pos();
@@ -424,4 +465,206 @@ QString QGVWidgetMeasure::getBearingLabel(const qreal& degrees)
 
     result = tr("%1: %2°").arg(getBearingLabelPrefix()).arg(QString::number(static_cast<double>(degrees), 'f', 0));
     return result;
+}
+
+void QGVWidgetMeasure::setWidgetAnchorEdges(const QSet<Qt::Edge>& edges)
+{
+    mWidgetAnchorEdges = edges;
+    const auto oldPointAnchor = getAnchor();
+
+    setAnchor(oldPointAnchor.toPoint(), mWidgetAnchorEdges);
+}
+
+QSet<Qt::Edge> QGVWidgetMeasure::getWidgetAnchorEdges()
+{
+    return mWidgetAnchorEdges;
+}
+
+void QGVWidgetMeasure::setWidgetBtnIcon(const QString& btnIcon)
+{
+    mWidgetBtnIcon = btnIcon;
+
+    refreshWidgetButton();
+}
+
+QString QGVWidgetMeasure::getWidgetBtnIcon()
+{
+    return mWidgetBtnIcon;
+}
+
+void QGVWidgetMeasure::setWidgetBtnSize(const QSize& btnSize)
+{
+    mWidgetBtnSize = btnSize;
+
+    refreshWidgetButton();
+}
+
+QSize QGVWidgetMeasure::getWidgetBtnSize()
+{
+    return mWidgetBtnSize;
+}
+
+void QGVWidgetMeasure::setBtnExternalRectColor(const QColor& rectColor)
+{
+    mBtnExternalRectColor = rectColor;
+    repaint();
+}
+
+void QGVWidgetMeasure::setBtnExternalBorderColor(const QColor& borderColor)
+{
+    mBtnExternalRectBorderColor = borderColor;
+    repaint();
+}
+
+void QGVWidgetMeasure::setBtnInternalRectColor(const QColor& rectColor)
+{
+    mBtnInternalRectColor = rectColor;
+    repaint();
+}
+
+void QGVWidgetMeasure::setBtnActiveInternalRectColor(const QColor& rectColor)
+{
+    mBtnActiveInternalRectColor = rectColor;
+    repaint();
+}
+
+QColor QGVWidgetMeasure::getBtnExternalRectColor()
+{
+    return mBtnExternalRectColor;
+}
+
+QColor QGVWidgetMeasure::getBtnExternalBorderColor()
+{
+    return mBtnExternalRectBorderColor;
+}
+
+QColor QGVWidgetMeasure::getBtnInternalRectColor()
+{
+    return mBtnInternalRectColor;
+}
+
+QColor QGVWidgetMeasure::getBtnActiveInternalRectColor()
+{
+    return mBtnActiveInternalRectColor;
+}
+
+void QGVWidgetMeasure::onWidgetBtnClick()
+{
+    if (!isActive()) {
+        activateWidget();
+    } else {
+        deactivateWidget();
+    }
+
+    const auto middleScreen = getMap()->getCamera().projCenter();
+    const auto middleScreenGeo = getMap()->getProjection()->projToGeo(middleScreen);
+    qDebug() << "Middle screen:" << middleScreen << "Geo:" << middleScreenGeo;
+}
+
+void QGVWidgetMeasure::activateWidget()
+{
+    bIsActive = true;
+
+    addPinToMap();
+    repaint();
+}
+
+void QGVWidgetMeasure::deactivateWidget()
+{
+    bIsActive = false;
+
+    removePinFromMap();
+    repaint();
+}
+
+bool QGVWidgetMeasure::isActive()
+{
+    return bIsActive;
+}
+
+void QGVWidgetMeasure::initializeLayout()
+{
+    setLayout(new QHBoxLayout());
+    layout()->setSpacing(10);
+    layout()->setSizeConstraint(QLayout::SetMinimumSize);
+    layout()->setContentsMargins(0, 0, 0, 0);
+}
+
+void QGVWidgetMeasure::initializeWidgetButton()
+{
+    // Tyler Durden will forgive me
+    const auto customStylesheet = "QToolButton { background-color: transparent; border: 0; padding: 10px; }";
+
+    mWidgetActivateBtn = new QToolButton(this);
+    mWidgetActivateBtn->setAutoRepeat(true);
+    mWidgetActivateBtn->setToolButtonStyle(Qt::ToolButtonIconOnly);
+    mWidgetActivateBtn->setIcon(QIcon(mWidgetBtnIcon));
+    mWidgetActivateBtn->setIconSize(mWidgetBtnSize);
+    mWidgetActivateBtn->setStyleSheet(customStylesheet);
+    mWidgetActivateBtn->setCursor(QCursor(Qt::PointingHandCursor));
+
+    if (layout()) {
+        layout()->addWidget(mWidgetActivateBtn);
+        // Associa click ai pulsanti
+        connect(mWidgetActivateBtn, &QToolButton::clicked, this, &QGVWidgetMeasure::onWidgetBtnClick);
+    }
+}
+
+void QGVWidgetMeasure::refreshWidgetButton()
+{
+    if (mWidgetActivateBtn == nullptr) {
+        return;
+    }
+
+    mWidgetActivateBtn->setIcon(QIcon(getWidgetBtnIcon()));
+    mWidgetActivateBtn->setIconSize(getWidgetBtnSize());
+}
+
+void QGVWidgetMeasure::paintEvent(QPaintEvent *event)
+{
+    const quint8 rectRoundedCorners = 50;
+
+    const quint8 externalRectOffset = 2;
+    const quint8 externalRectExtraSize = 20;
+    const quint8 externalRectBorderSize = 2;
+
+    const quint8 internalRectOffset = 7;
+    const quint8 internalRectExtraSize = 10;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    // External rounded rect
+    QPainterPath externalRectPath;
+    const QRect externalRect(externalRectOffset, externalRectOffset, getWidgetBtnSize().width() + externalRectExtraSize, getWidgetBtnSize().height() + externalRectExtraSize);
+    externalRectPath.addRoundedRect(externalRect, rectRoundedCorners, rectRoundedCorners);
+
+    // External border color
+    QPen pen(getBtnExternalBorderColor(), externalRectBorderSize);
+    // External rect color
+    QBrush rectColor(getBtnExternalRectColor());
+
+    // Draw external rect
+    painter.setPen(pen);
+    painter.fillPath(externalRectPath, rectColor);
+    painter.drawPath(externalRectPath);
+
+    QPainterPath internalRectPath;
+
+    // Internal rounded rect
+    const QRect internalRect(internalRectOffset, internalRectOffset, getWidgetBtnSize().width() + internalRectExtraSize, getWidgetBtnSize().height() + internalRectExtraSize);
+    internalRectPath.addRoundedRect(internalRect, rectRoundedCorners, rectRoundedCorners);
+
+    // Color based on widget status
+    if (isActive()) {
+        pen = QPen(getBtnActiveInternalRectColor());
+        rectColor = QBrush(getBtnActiveInternalRectColor());
+    } else {
+        pen = QPen(getBtnInternalRectColor());
+        rectColor = QBrush(getBtnInternalRectColor());
+    }
+
+    painter.setPen(pen);
+    painter.setBrush(rectColor);
+    painter.drawPath(internalRectPath);
 }
