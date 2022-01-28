@@ -53,7 +53,6 @@ add_executable(qgeoview-demo
     samples/mytile.h
     samples/measures.h
     samples/measures.cpp
-    resources.qrc
 )
 
 

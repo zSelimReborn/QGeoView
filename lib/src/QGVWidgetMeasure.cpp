@@ -35,6 +35,7 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mBtnInternalRectColor(Qt::white),
     mBtnActiveInternalRectColor(Qt::blue)
 {
+    Q_INIT_RESOURCE(resources);
     setAnchor(QPoint(15, 15), mWidgetAnchorEdges);
     /* setMaximumSize(QSize(100, 100));
     setMinimumSize(QSize(100, 100)); */

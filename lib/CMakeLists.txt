@@ -12,6 +12,8 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
              Positioning
             )
 
+qt5_add_resources (RCC_SOURCES resources.qrc)
+
 add_library(qgeoview SHARED
     include/QGeoView/QGVGlobal.h
     include/QGeoView/QGVProjection.h
@@ -68,6 +70,7 @@ add_library(qgeoview SHARED
     src/QGVLine.cpp
     src/QGVWidgetMeasure.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
+    ${RCC_SOURCES}
     )
 
 target_include_directories(qgeoview
