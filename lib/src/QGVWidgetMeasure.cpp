@@ -53,37 +53,17 @@ QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit, const quint8& accu
     setAccuracy(accuracy);
 }
 
-QGVWidgetMeasure::QGVWidgetMeasure(const QGV::GeoPos& leftPinStartingPoint, const QGV::GeoPos& rightPinStartingPoint) :
-    QGVWidgetMeasure()
-{
-    setLeftPinStartingPoint(leftPinStartingPoint);
-    setRightPinStartingPoint(rightPinStartingPoint);
-}
-
-QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit, const quint8& accuracy, const QGV::GeoPos& leftPinStartingPoint, const QGV::GeoPos& rightPinStartingPoint) :
-    QGVWidgetMeasure()
-{
-    setUnit(unit);
-    setAccuracy(accuracy);
-    setLeftPinStartingPoint(leftPinStartingPoint);
-    setRightPinStartingPoint(rightPinStartingPoint);
-}
-
 QGVWidgetMeasure::QGVWidgetMeasure(const DistanceUnits& unit,
     const quint8& accuracy,
     const QString& iconPin,
     const QSize& iconSize,
-    const QPoint& iconAnchor,
-    const QGV::GeoPos& leftPinStartingPoint,
-    const QGV::GeoPos& rightPinStartingPoint
+    const QPoint& iconAnchor
 ) : QGVWidgetMeasure(unit, accuracy)
 {
     setIconPin(iconPin);
     setIconPinMovement(iconPin);
     setIconSize(iconSize);
     setIconAnchor(iconAnchor);
-    setLeftPinStartingPoint(leftPinStartingPoint);
-    setRightPinStartingPoint(rightPinStartingPoint);
 }
 
 void QGVWidgetMeasure::setUnit(const DistanceUnits &unit)
@@ -146,23 +126,19 @@ QPoint QGVWidgetMeasure::getIconAnchor()
     return mIconAnchor;
 }
 
-void QGVWidgetMeasure::setLeftPinStartingPoint(const QGV::GeoPos &pos)
-{
-    mLeftPinStartingPoint = pos;
-}
-
 QGV::GeoPos QGVWidgetMeasure::getLeftPinStartingPoint()
 {
-    return mLeftPinStartingPoint;
-}
+    const qreal geoOffset = 2;
 
-void QGVWidgetMeasure::setRightPinStartingPoint(const QGV::GeoPos &pos)
-{
-    mRightPinStartingPoint = pos;
+    mLeftPinStartingPoint = calculateMiddlePosition(geoOffset);
+    return mLeftPinStartingPoint;
 }
 
 QGV::GeoPos QGVWidgetMeasure::getRightPinStartingPoint()
 {
+    const qreal geoOffset = -2;
+
+    mRightPinStartingPoint = calculateMiddlePosition(geoOffset);
     return mRightPinStartingPoint;
 }
 
@@ -555,10 +531,6 @@ void QGVWidgetMeasure::onWidgetBtnClick()
     } else {
         deactivateWidget();
     }
-
-    const auto middleScreen = getMap()->getCamera().projCenter();
-    const auto middleScreenGeo = getMap()->getProjection()->projToGeo(middleScreen);
-    qDebug() << "Middle screen:" << middleScreen << "Geo:" << middleScreenGeo;
 }
 
 void QGVWidgetMeasure::activateWidget()
@@ -618,6 +590,14 @@ void QGVWidgetMeasure::refreshWidgetButton()
 
     mWidgetActivateBtn->setIcon(QIcon(getWidgetBtnIcon()));
     mWidgetActivateBtn->setIconSize(getWidgetBtnSize());
+}
+
+QGV::GeoPos QGVWidgetMeasure::calculateMiddlePosition(const qreal& geoOffset)
+{
+    const auto middleScreen = getMap()->getCamera().projCenter();
+    const auto middleScreenGeo = getMap()->getProjection()->projToGeo(middleScreen);
+
+    return QGV::GeoPos(middleScreenGeo.latitude() + geoOffset, middleScreenGeo.longitude() + geoOffset);
 }
 
 void QGVWidgetMeasure::paintEvent(QPaintEvent *event)

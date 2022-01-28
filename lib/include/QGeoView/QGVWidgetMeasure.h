@@ -27,26 +27,14 @@ public:
     QGVWidgetMeasure(const DistanceUnits&, const quint8&);
 
     /**
-     * @brief QGVWidgetMeasure constructor. Defines the default positions of the two pins.
-     */
-    QGVWidgetMeasure(const QGV::GeoPos&, const QGV::GeoPos&);
-
-    /**
-     * @brief QGVWidgetMeasure constructor. Defines a custom unit for distances, accuracy and the default positions of the two pins.
-     */
-    QGVWidgetMeasure(const DistanceUnits&, const quint8&, const QGV::GeoPos&, const QGV::GeoPos&);
-
-    /**
-     * @brief QGVWidgetMeasure constructor. Defines unit for distances, accuracy, pin image, pin size, pin anchor and the default positions of the two pins.
+     * @brief QGVWidgetMeasure constructor. Defines unit for distances, accuracy, pin image, pin size, pin anchor.
      */
     QGVWidgetMeasure(
             const DistanceUnits&,
             const quint8&,
             const QString&,
             const QSize&,
-            const QPoint&,
-            const QGV::GeoPos&,
-            const QGV::GeoPos&
+            const QPoint&
     );
 
     /**
@@ -404,6 +392,12 @@ private:
      * @brief refreshButton method which change button icon and size
      */
     void refreshWidgetButton();
+
+    /**
+     * @brief calculateMiddlePosition returns current middle geo position based on camera location adding an offset passed.
+     * @return QGV::GeoPos
+     */
+    QGV::GeoPos calculateMiddlePosition(const qreal&);
 
     /**
      * @brief paintEvent called every frame

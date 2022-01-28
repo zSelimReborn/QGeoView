@@ -25,7 +25,7 @@ void MeasuresDemo::onInit()
      */
 
     // Rome and Naples as starting positions of the pins
-    mWidgetMeasure = new QGVWidgetMeasure(QGV::GeoPos(41.9027835, 12.4963655), QGV::GeoPos(40.851775, 14.268124));
+    mWidgetMeasure = new QGVWidgetMeasure();
     QList<QPair<QString, QGVWidget*>> widgets = {
         { "QGVWidgetMeasure",  mWidgetMeasure}
     };
@@ -54,7 +54,7 @@ void MeasuresDemo::onInit()
     const auto widgetBtnIcon = iconPinMovement;
     const auto widgetBtnSize = QSize(45, 45);
 
-    const auto widgetBtnActiveColor = QColor::fromRgb(242, 247, 250);
+    const auto widgetBtnActiveColor = QColor::fromRgb(154, 211, 254);
 
     // How to change widget position on screen
     /* mWidgetMeasure->setAnchor(QPoint(30, 30), mWidgetMeasure->getWidgetAnchorEdges());
