@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/pin-icon.png</file>
+        <file>resources/pin-icon-highlight.png</file>
+        <file>resources/compass.png</file>
+    </qresource>
+</RCC>
