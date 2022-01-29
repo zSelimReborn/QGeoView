@@ -534,7 +534,7 @@ void QGVMapQGView::mousePressEvent(QMouseEvent* event)
 {
     event->ignore();
     objectClick(event);
-    if (event->button() == Qt::LeftButton) {
+    /* if (event->button() == Qt::LeftButton) {
         if (event->modifiers() == Qt::AltModifier) {
             startMovingObject(event);
         } else if (event->modifiers() == Qt::NoModifier) {
@@ -542,7 +542,18 @@ void QGVMapQGView::mousePressEvent(QMouseEvent* event)
         }
     } else if (event->button() == Qt::RightButton) {
         startSelectionRect(event);
+    } */
+
+    if (event->button() == Qt::RightButton) {
+        startSelectionRect(event);
+    } else {
+        startMovingObject(event);
+        // No objects moving, move map
+        if (mState == QGV::MapState::Idle) {
+            startMoving(event);
+        }
     }
+
     QGraphicsView::mousePressEvent(event);
 }
 
