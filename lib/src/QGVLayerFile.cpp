@@ -1,7 +1,10 @@
 #include "QGVLayerFile.h"
+
 #include "QGVDrawItem.h"
 #include "QGVLayerShape.h"
 #include "QGVShapeIcon.h"
+#include "QGVShapePolygon.h"
+#include "QGVShapeLine.h"
 
 QGVLayerFile::QGVLayerFile(QGVItem* parent, const QString& sourceFileName) :
     mSourceFileName(sourceFileName)
@@ -71,7 +74,13 @@ QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& ite
     switch (itemData.getType()) {
         case QGVLayerShapeType::Point:
             return new QGVShapeIcon(parent, itemData, shapeIcon);
-        break;
+            break;
+        case QGVLayerShapeType::Line:
+            return new QGVShapeLine(parent, itemData);
+            break;
+        case QGVLayerShapeType::Polygon:
+            return new QGVShapePolygon(parent, itemData);
+            break;
     }
 
     return nullptr;

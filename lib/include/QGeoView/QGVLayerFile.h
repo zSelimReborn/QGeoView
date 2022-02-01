@@ -7,8 +7,6 @@
 
 #include "QGVLayer.h"
 
-class QGVLayerShape;
-
 enum class QGVLayerShapeType
 {
     Point,

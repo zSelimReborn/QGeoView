@@ -13,6 +13,7 @@ public:
     QGVLayerItemData getShapeData();
     QVariant getProperty(const QString&);
     QGVLayerItemData::GeoCoordinates getCoordinates();
+    QGVLayerShapeType getType();
 
 private:
     QGVLayerItemData mShapeData;

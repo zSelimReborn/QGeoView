@@ -20,3 +20,8 @@ QGVLayerItemData::GeoCoordinates QGVLayerShape::getCoordinates()
 {
     return mShapeData.getCoordinates();
 }
+
+QGVLayerShapeType QGVLayerShape::getType()
+{
+    return mShapeData.getType();
+}

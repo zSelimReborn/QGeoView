@@ -46,6 +46,8 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVLayerGeoJson.h
     include/QGeoView/QGVLayerShape.h
     include/QGeoView/QGVShapeIcon.h
+    include/QGeoView/QGVShapePolygon.h
+    include/QGeoView/QGVShapeLine.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -77,6 +79,8 @@ add_library(qgeoview SHARED
     src/QGVLayerGeoJson.cpp
     src/QGVLayerShape.cpp
     src/QGVShapeIcon.cpp
+    src/QGVShapePolygon.cpp
+    src/QGVShapeLine.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     ${RCC_SOURCES}
     )
