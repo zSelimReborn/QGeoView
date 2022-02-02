@@ -12,6 +12,28 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
              Positioning
             )
 
+# External lib for reading shapefiles
+ExternalProject_Add(shapelib
+        GIT_REPOSITORY https://github.com/OSGeo/shapelib.git
+        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+        TIMEOUT 360
+        )
+set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.so)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/shp.lib)
+    add_custom_command(
+            TARGET shapelib
+            POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy
+            ${EXTERNAL_INSTALL_LOCATION}/bin/shp.dll
+            ${CMAKE_BINARY_DIR}
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.dylib)
+endif()
+set(LIBSHAPELIB ${LIBSHAPELIB} PARENT_SCOPE)
+
+
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
 add_library(qgeoview SHARED
@@ -105,6 +127,7 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Widgets
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Positioning
+        ${LIBSHAPELIB}
         )
 
 add_library(QGeoView ALIAS qgeoview)

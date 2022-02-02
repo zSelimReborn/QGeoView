@@ -4,5 +4,10 @@
         <file>resources/pin-icon.png</file>
         <file>resources/pin-icon-highlight.png</file>
         <file>resources/map.geojson</file>
+        <file>resources/buildings.cpg</file>
+        <file>resources/buildings.dbf</file>
+        <file>resources/buildings.prj</file>
+        <file>resources/buildings.shp</file>
+        <file>resources/buildings.shx</file>
     </qresource>
 </RCC>
