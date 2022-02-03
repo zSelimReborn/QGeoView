@@ -33,6 +33,15 @@ void QGVLayerFile::addShape(QGVDrawItem* shape)
     mShapes.append(shape);
 }
 
+void QGVLayerFile::clearShapes()
+{
+    for (const auto shape : qAsConst(mShapes)) {
+        removeItem(shape);
+    }
+
+    mShapes.clear();
+}
+
 void QGVLayerFile::addShapesToMap()
 {
     for (const auto shape : qAsConst(mShapes)) {

@@ -2,7 +2,6 @@
 
 #include <QGeoView/QGVGlobal.h>
 #include <QGeoView/QGVWidgetMeasure.h>
-#include <QGeoView/QGVLayerGeoJson.h>
 
 MeasuresDemo::MeasuresDemo(QGVMap* geoMap, QObject* parent)
     : DemoItem(geoMap, SelectorDialog::Multi, parent)
@@ -25,16 +24,10 @@ void MeasuresDemo::onInit()
      * List of available widgets.
      */
 
-    // Rome and Naples as starting positions of the pins
     mWidgetMeasure = new QGVWidgetMeasure();
     QList<QPair<QString, QGVWidget*>> widgets = {
         { "QGVWidgetMeasure",  mWidgetMeasure}
     };
-
-    const QString layerJson = ":/resources/map.geojson";
-    mLayerJson = new QGVLayerGeoJson(geoMap()->rootItem(), layerJson);
-    geoMap()->addItem(mLayerJson);
-    mLayerJson->activate();
 
     /*
      *

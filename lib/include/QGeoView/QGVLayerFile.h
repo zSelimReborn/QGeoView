@@ -45,6 +45,7 @@ public:
 
 protected:
     void addShape(QGVDrawItem*);
+    void clearShapes();
 
     virtual void buildShapes() = 0;
     void addShapesToMap();

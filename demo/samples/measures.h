@@ -4,8 +4,6 @@
 #include "demoitem.h"
 
 class QGVWidgetMeasure;
-class QGVLayerGeoJson;
-
 /**
  * @brief The MeasuresDemo class is a demo class which places a QGVWidgetMeasure on the map
  */
@@ -59,8 +57,6 @@ private:
      * @brief mWidgetMeasure widget measure object
      */
     QGVWidgetMeasure* mWidgetMeasure;
-
-    QGVLayerGeoJson* mLayerJson;
 };
 
 #endif // MEASURES_H

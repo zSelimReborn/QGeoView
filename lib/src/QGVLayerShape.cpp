@@ -16,6 +16,11 @@ QVariant QGVLayerShape::getProperty(const QString& property)
     return mShapeData.getProperty(property);
 }
 
+bool QGVLayerShape::hasProperty(const QString& property)
+{
+    return mShapeData.getProperties().contains(property);
+}
+
 QGVLayerItemData::GeoCoordinates QGVLayerShape::getCoordinates()
 {
     return mShapeData.getCoordinates();

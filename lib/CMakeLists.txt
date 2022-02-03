@@ -66,6 +66,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVWidgetMeasure.h
     include/QGeoView/QGVLayerFile.h
     include/QGeoView/QGVLayerGeoJson.h
+    include/QGeoView/QGVLayerESRI.h
     include/QGeoView/QGVLayerShape.h
     include/QGeoView/QGVShapeIcon.h
     include/QGeoView/QGVShapePolygon.h
@@ -99,6 +100,7 @@ add_library(qgeoview SHARED
     src/QGVWidgetMeasure.cpp
     src/QGVLayerFile.cpp
     src/QGVLayerGeoJson.cpp
+    src/QGVLayerESRI.cpp
     src/QGVLayerShape.cpp
     src/QGVShapeIcon.cpp
     src/QGVShapePolygon.cpp

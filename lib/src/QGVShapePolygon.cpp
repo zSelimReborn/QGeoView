@@ -21,9 +21,10 @@ void QGVShapePolygon::projPaint(QPainter* painter)
         return;
     }
 
-    const QColor shapeColor = QColor(getProperty(fillColorProp).toString());
+    const QColor shapeColor = hasProperty(fillColorProp)? QColor(getProperty(fillColorProp).toString()) : Qt::black;
+    const qreal shapeOpacity = hasProperty(fillOpacityProp)? getProperty(fillOpacityProp).toDouble() : 1;
 
-    painter->setOpacity(getProperty(fillOpacityProp).toDouble());
+    painter->setOpacity(shapeOpacity);
 
     painter->setPen(QPen(QBrush(shapeColor), 1));
     painter->setBrush(QBrush(shapeColor));

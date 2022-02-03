@@ -2,7 +2,10 @@
 #include "QGVDrawItem.h"
 #include "QGVLayerShape.h"
 
+#include "shapefil.h"
+
 #include <QFile>
+#include <QTemporaryDir>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
@@ -27,6 +30,11 @@ QGVLayerGeoJson::QGVLayerGeoJson(QGVItem* parent, const QString& sourceFile) :
 void QGVLayerGeoJson::buildShapes()
 {
     const auto document = readFile();
+    if (document.isNull()) {
+        qDebug() << "QGVLayerGeoJson::buildShapes(): Unable to open" << getSourceFileName();
+        return;
+    }
+
     const auto documentObj = document.object();
     const auto shapesObj = documentObj.value(shapesKey);
     const auto shapesArray = shapesObj.toArray();

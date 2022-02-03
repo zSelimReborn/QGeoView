@@ -49,9 +49,11 @@ void QGVShapeLine::projPaint(QPainter* painter)
     }
 
     const auto projPolygon = getProjPolygon();
-    const auto lineColor = QColor(getProperty(strokeColorProp).toString());
-    const auto lineOpacity = getProperty(strokeOpacityProp).toDouble();
-    const auto lineWidth = baseLineWidth * getProperty(strokeWidthProp).toInt();
+    const auto lineColor = hasProperty(strokeColorProp)? QColor(getProperty(strokeColorProp).toString()) : Qt::black;
+    const auto lineOpacity = hasProperty(strokeOpacityProp)? getProperty(strokeOpacityProp).toDouble() : 1;
+
+    const auto lineFactor = hasProperty(strokeWidthProp)? getProperty(strokeWidthProp).toInt() : 1;
+    const auto lineWidth = baseLineWidth * lineFactor;
 
     painter->setOpacity(lineOpacity);
     painter->setPen(QPen(QBrush(lineColor), lineWidth));
