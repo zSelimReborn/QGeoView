@@ -87,7 +87,7 @@ void QGVBallon::onProjection(QGVMap* geoMap)
     QGVDrawItem::onProjection(geoMap);
     mProjAnchor = geoMap->getProjection()->geoToProj(mGeoPos);
     // Hardcoded starting rect
-    mProjRect = QRectF(mProjAnchor, QSize(40, 20));
+    mProjRect = QRectF(mProjAnchor, QSize(200, 30));
 }
 
 QPainterPath QGVBallon::projShape() const
