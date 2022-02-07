@@ -30,6 +30,12 @@ public:
      * It places the result in the third (distance) and fourth (bearing) parameter.
      */
     static void getDistanceAndBearingBetweenGeoPos(const QGV::GeoPos&, const QGV::GeoPos&, OUT qreal&, OUT qreal&);
+
+    /**
+     * @brief getPositionAtDistanceAndBearing Returns the coordinate that is reached by traveling distance meters from the position passed at azimuth (or bearing).
+     * @return GeoPos
+     */
+    static QGV::GeoPos getPositionAtDistanceAndBearing(const QGV::GeoPos&, const qreal&, const qreal&);
 };
 
 #endif // QGVUTILS_H

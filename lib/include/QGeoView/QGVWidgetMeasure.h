@@ -133,6 +133,15 @@ public:
      */
     QGV::GeoPos getRightPinStartingPoint();
 
+    void setPinStartingPointMetersOffset(const qreal&);
+    qreal getPinStartingPointMetersOffset();
+
+    void setLeftPinAzimuthOffset(const qreal&);
+    qreal getLeftPinAzimuthOffset();
+
+    void setRightPinAzimuthOffset(const qreal&);
+    qreal getRightPinAzimuthOffset();
+
     /**
      * @brief setDistanceLabelPrefix change distance label prefix.
      * Parameters: new prefix
@@ -394,10 +403,10 @@ private:
     void refreshWidgetButton();
 
     /**
-     * @brief calculateMiddlePosition returns current middle geo position based on camera location adding an offset passed.
+     * @brief calculateMiddlePosition returns current middle geo position based on camera location adding an offset (meters) and bearing (degrees) passed.
      * @return QGV::GeoPos
      */
-    QGV::GeoPos calculateMiddlePosition(const qreal&);
+    QGV::GeoPos calculateMiddlePosition(const qreal&, const qreal&);
 
     /**
      * @brief paintEvent called every frame
@@ -471,6 +480,11 @@ private:
      * @brief mRightPinStartingPoint second pin starting point (latitude, longitude)
      */
     QGV::GeoPos mRightPinStartingPoint;
+
+    qreal mPinStartingPointMetersOffset;
+
+    qreal mLeftPinAzimuthOffset;
+    qreal mRightPinAzimuthOffset;
 
     // Ballon settings
     /**
