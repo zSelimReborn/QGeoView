@@ -1,6 +1,7 @@
 #include "QGVLayerESRI.h"
 
 #include "shapefil.h"
+#include <cstring>
 
 QGVLayerESRI::QGVLayerESRI(QGVItem* parent, const QString& sourceFile) :
     QGVLayerFile(parent, sourceFile)
