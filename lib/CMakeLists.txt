@@ -109,6 +109,8 @@ add_library(qgeoview SHARED
     ${RCC_SOURCES}
     )
 
+add_dependencies(qgeoview shapelib)
+
 target_include_directories(qgeoview
     PUBLIC
         include
@@ -120,8 +122,6 @@ target_compile_definitions(qgeoview
     PRIVATE
         QGV_EXPORT
 )
-
-add_dependencies(qgeoview shapelib)
 
 target_link_libraries(qgeoview
         PRIVATE
