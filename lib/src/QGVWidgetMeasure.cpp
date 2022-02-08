@@ -19,6 +19,9 @@ QGVWidgetMeasure::QGVWidgetMeasure() :
     mIconAnchor(mIconSize.width() / 2, mIconSize.height()),
     mLeftPinStartingPoint(0, 0),
     mRightPinStartingPoint(0, 1),
+    mPinStartingPointMetersOffset(5000),
+    mLeftPinAzimuthOffset(60),
+    mRightPinAzimuthOffset(240),
     mDistanceLabelPrefix("Distance: "),
     mBearingLabelPrefix("Bearing: "),
     mBallonValueSeparator("|"),
@@ -129,18 +132,50 @@ QPoint QGVWidgetMeasure::getIconAnchor()
 
 QGV::GeoPos QGVWidgetMeasure::getLeftPinStartingPoint()
 {
-    const qreal geoOffset = 2;
+    const qreal metersOffset = getPinStartingPointMetersOffset(); // Meters
+    const qreal azimuthOffset = getLeftPinAzimuthOffset(); // Degrees
 
-    mLeftPinStartingPoint = calculateMiddlePosition(geoOffset);
+    mLeftPinStartingPoint = calculateMiddlePosition(metersOffset, azimuthOffset);
     return mLeftPinStartingPoint;
 }
 
 QGV::GeoPos QGVWidgetMeasure::getRightPinStartingPoint()
 {
-    const qreal geoOffset = -2;
+    const qreal metersOffset = getPinStartingPointMetersOffset(); // Meters
+    const qreal azimuthOffset = getRightPinAzimuthOffset(); // Degrees
 
-    mRightPinStartingPoint = calculateMiddlePosition(geoOffset);
+    mRightPinStartingPoint = calculateMiddlePosition(metersOffset, azimuthOffset);
     return mRightPinStartingPoint;
+}
+
+void QGVWidgetMeasure::setPinStartingPointMetersOffset(const qreal& meters)
+{
+    mPinStartingPointMetersOffset = meters;
+}
+
+qreal QGVWidgetMeasure::getPinStartingPointMetersOffset()
+{
+    return mPinStartingPointMetersOffset;
+}
+
+void QGVWidgetMeasure::setLeftPinAzimuthOffset(const qreal& azimuth)
+{
+    mLeftPinAzimuthOffset = azimuth;
+}
+
+qreal QGVWidgetMeasure::getLeftPinAzimuthOffset()
+{
+    return mLeftPinAzimuthOffset;
+}
+
+void QGVWidgetMeasure::setRightPinAzimuthOffset(const qreal& azimuth)
+{
+    mRightPinAzimuthOffset = azimuth;
+}
+
+qreal QGVWidgetMeasure::getRightPinAzimuthOffset()
+{
+    return mRightPinAzimuthOffset;
 }
 
 void QGVWidgetMeasure::setDistanceLabelPrefix(const QString& distanceLabelPrefix)
@@ -242,7 +277,7 @@ bool QGVWidgetMeasure::shouldShowPinLine()
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     const int pinZValue = 20;
-    auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
+    auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale | QGV::ItemFlag::Clickable;
 
     QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(), iconFlags);
     newIcon->setIconMovement(getIconPinMovement());
@@ -291,6 +326,9 @@ void QGVWidgetMeasure::addPinToMap()
 
     connect(leftPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onLeftPinStartMove);
     connect(rightPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onRightPinStartMove);
+
+    connect(leftPin, &QGVIcon::onClick, this, &QGVWidgetMeasure::onLeftPinStartMove);
+    connect(rightPin, &QGVIcon::onClick, this, &QGVWidgetMeasure::onRightPinStartMove);
 
     onPinMove(QPointF());
 }
@@ -357,9 +395,6 @@ void QGVWidgetMeasure::updateBallons(const qreal& distanceMeters, const qreal& l
 
     leftBallon->setBallonText(leftBallonText);
     rightBallon->setBallonText(rightBallonText);
-
-    leftBallon->repaint();
-    rightBallon->repaint();
 }
 
 void QGVWidgetMeasure::moveBallons()
@@ -408,27 +443,27 @@ QString QGVWidgetMeasure::getDistanceLabel(const qreal& meters)
     switch (mUnit) {
         case DistanceUnits::Kilometers:
             if (meters > 1000) {
-                result = tr("%1: %2 km").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters) / 1000, 'f', mAccuracy));
+                result = tr("%1 %2 km").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters) / 1000, 'f', mAccuracy));
             } else {
-                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
+                result = tr("%1 %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
             }
         break;
         case DistanceUnits::Miles:
             miles = meters / milesFactor;
 
             if (miles > 1) {
-                result = tr("%1: %2 mi").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(miles), 'f', mAccuracy));
+                result = tr("%1 %2 mi").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(miles), 'f', mAccuracy));
             } else {
-                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
+                result = tr("%1 %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(meters), 'f', mAccuracy));
             }
         break;
         case DistanceUnits::NauticalMiles:
             nauticalMiles = meters / nauticalMilesFactor;
 
             if (nauticalMiles > 1) {
-                result = tr("%1: %2 nm").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
+                result = tr("%1 %2 nm").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
             } else {
-                result = tr("%1: %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
+                result = tr("%1 %2 m").arg(getDistanceLabelPrefix()).arg(QString::number(static_cast<double>(nauticalMiles), 'f', mAccuracy));
             }
         break;
     }
@@ -440,7 +475,7 @@ QString QGVWidgetMeasure::getBearingLabel(const qreal& degrees)
 {
     QString result;
 
-    result = tr("%1: %2°").arg(getBearingLabelPrefix()).arg(QString::number(static_cast<double>(degrees), 'f', 0));
+    result = tr("%1 %2°").arg(getBearingLabelPrefix()).arg(QString::number(static_cast<double>(degrees), 'f', 0));
     return result;
 }
 
@@ -593,12 +628,12 @@ void QGVWidgetMeasure::refreshWidgetButton()
     mWidgetActivateBtn->setIconSize(getWidgetBtnSize());
 }
 
-QGV::GeoPos QGVWidgetMeasure::calculateMiddlePosition(const qreal& geoOffset)
+QGV::GeoPos QGVWidgetMeasure::calculateMiddlePosition(const qreal& meters, const qreal& azimuth)
 {
     const auto middleScreen = getMap()->getCamera().projCenter();
     const auto middleScreenGeo = getMap()->getProjection()->projToGeo(middleScreen);
 
-    return QGV::GeoPos(middleScreenGeo.latitude() + geoOffset, middleScreenGeo.longitude() + geoOffset);
+    return QGVUtils::getPositionAtDistanceAndBearing(middleScreenGeo, meters, azimuth);
 }
 
 void QGVWidgetMeasure::paintEvent(QPaintEvent *event)

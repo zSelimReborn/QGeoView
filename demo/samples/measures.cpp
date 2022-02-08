@@ -41,15 +41,18 @@ void MeasuresDemo::onInit()
     }
 
     // Widget configuration
-    const auto distanceLabelPrefix = QString("Distanza: ");
-    const auto bearingLabelPrefix = QString("Rotta: ");
+    const auto distanceLabelPrefix = QString("");
+    const auto bearingLabelPrefix = QString("Rotta:");
     const auto ballonValueSeparator = QString("-");
     const auto ballonBackground = QColor::fromRgb(0, 62, 126);
     const auto ballonText = Qt::white;
     const auto ballonTextPadding = 7;
     const auto lineColor = Qt::red;
-    const auto lineWidth = 250;
+    const auto lineWidth = 100;
     const auto iconPinMovement = QString(":/resources/pin-icon-highlight.png");
+    const qreal pinMetersOffset{25000};
+    const qreal leftPinAzimuthOffset{90};
+    const qreal rightPinAzimuthOffset{270};
 
     const auto widgetBtnIcon = iconPinMovement;
     const auto widgetBtnSize = QSize(45, 45);
@@ -63,6 +66,10 @@ void MeasuresDemo::onInit()
     // How to change widget btn icon/size
     // mWidgetMeasure->setWidgetBtnIcon(widgetBtnIcon);
     mWidgetMeasure->setWidgetBtnSize(widgetBtnSize);
+
+    mWidgetMeasure->setPinStartingPointMetersOffset(pinMetersOffset);
+    mWidgetMeasure->setLeftPinAzimuthOffset(leftPinAzimuthOffset);
+    mWidgetMeasure->setRightPinAzimuthOffset(rightPinAzimuthOffset);
 
     mWidgetMeasure->setBtnExternalBorderColor(Qt::white);
     mWidgetMeasure->setBtnExternalRectColor(ballonBackground);

@@ -27,3 +27,11 @@ void QGVUtils::getDistanceAndBearingBetweenGeoPos(const QGV::GeoPos& first, cons
     distance = firstGeo.distanceTo(secondGeo);
     bearing = firstGeo.azimuthTo(secondGeo);
 }
+
+QGV::GeoPos QGVUtils::getPositionAtDistanceAndBearing(const QGV::GeoPos& currentPosition, const qreal& meters, const qreal& azimuth)
+{
+    const QGeoCoordinate geoPos{currentPosition.latitude(), currentPosition.longitude()};
+    const QGeoCoordinate newPos = geoPos.atDistanceAndAzimuth(meters, azimuth);
+
+    return QGV::GeoPos(newPos.latitude(), newPos.longitude());
+}

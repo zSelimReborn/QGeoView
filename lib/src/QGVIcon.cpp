@@ -46,16 +46,20 @@ QPoint QGVIcon::anchor()
     return mAnchor;
 }
 
+void QGVIcon::projOnMouseClick(const QPointF &projPos)
+{
+    QGVImage::projOnMouseClick(projPos);
+
+    emit onClick(projPos);
+}
+
 void QGVIcon::projOnObjectStartMove(const QPointF& pos)
 {
     QGVImage::projOnObjectStartMove(pos);
 
-    // Emit signal only if icon is movable
-    if (isFlag(QGV::ItemFlag::Movable)) {
-        setIsMoving(true);
-        changeMovementIcon();
-        emit onStartMove(pos);
-    }
+    setIsMoving(true);
+    changeMovementIcon();
+    emit onStartMove(pos);
 }
 
 void QGVIcon::projOnObjectMovePos(const QPointF& pos)
@@ -66,10 +70,6 @@ void QGVIcon::projOnObjectMovePos(const QPointF& pos)
         auto geoPos = getMap()->getProjection()->projToGeo(pos);
         setGeometry(geoPos, mSize, mAnchor);
         refresh();
-    }
-
-    // Emit signal only if icon is movable
-    if (isFlag(QGV::ItemFlag::Movable)) {
         emit onMove(pos);
     }
 }
@@ -77,13 +77,9 @@ void QGVIcon::projOnObjectMovePos(const QPointF& pos)
 void QGVIcon::projOnObjectStopMove(const QPointF& pos)
 {
     QGVImage::projOnObjectStopMove(pos);
-
-    // Emit signal only if icon is movable
-    if (isFlag(QGV::ItemFlag::Movable)) {
-        setIsMoving(false);
-        changeDefaultIcon();
-        emit onStopMove(pos);
-    }
+    setIsMoving(false);
+    changeDefaultIcon();
+    emit onStopMove(pos);
 }
 
 void QGVIcon::setIconMovement(const QString& iconPin)

@@ -20,11 +20,13 @@ QGVBallon::QGVBallon(QGVItem* parent, const QGV::GeoPos& pos, const QString& tex
 void QGVBallon::showBallon()
 {
     bShouldShowBallon = true;
+    repaint();
 }
 
 void QGVBallon::hideBallon()
 {
     bShouldShowBallon = false;
+    repaint();
 }
 
 bool QGVBallon::shouldShowBallon()
@@ -34,7 +36,10 @@ bool QGVBallon::shouldShowBallon()
 
 void QGVBallon::setBallonText(const QString& baloonText)
 {
+    resetBoundary();
     mBallonText = baloonText;
+    refresh();
+    repaint();
 }
 
 QString QGVBallon::getBallonText() const
@@ -113,6 +118,7 @@ void QGVBallon::projPaint(QPainter* painter)
     const QPointF basePos = getMap()->getProjection()->geoToProj(mGeoPos);
     const QPointF rectPos = basePos - rectAnchor;
 
+    resetBoundary();
     // Padding management
     mProjRect = QRectF(rectPos.x(), rectPos.y(), ballonRect.width() + getBallonTextPadding(), ballonRect.height() + getBallonTextPadding());
 
@@ -143,9 +149,9 @@ void QGVBallon::move(const QGV::GeoPos& newPos)
     const auto rectAnchor = QPointF(mProjRect.width() / 2, mProjRect.height() / 2 + getMarginBottom());
     const QPointF rectPos = mProjAnchor - rectAnchor;
 
+    resetBoundary();
     mProjRect = QRectF(rectPos, mProjRect.size());
 
-    resetBoundary();
     refresh();
     repaint();
 }
