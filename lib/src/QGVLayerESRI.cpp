@@ -79,7 +79,7 @@ void QGVLayerESRI::initializeSourceFileAsCharArray()
     const auto fileAsByte = sourceFile.toLocal8Bit();
 
     mSourceFileNameAsCharArray = new char[sourceFile.length() + 1];
-    strcpy_s(mSourceFileNameAsCharArray, sourceFile.length() + 1,fileAsByte.data());
+    strcpy(mSourceFileNameAsCharArray, fileAsByte.data());
 }
 
 char* QGVLayerESRI::getSourceFileNameAsCharArray()
