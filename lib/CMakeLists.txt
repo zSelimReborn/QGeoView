@@ -133,6 +133,7 @@ target_link_libraries(qgeoview
         )
 
 add_library(QGeoView ALIAS qgeoview)
+add_dependencies(qgeoview shapelib)
 
 install(TARGETS qgeoview LIBRARY
         RUNTIME DESTINATION bin
