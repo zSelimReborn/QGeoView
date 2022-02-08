@@ -61,6 +61,8 @@ public:
      */
     bool isMoving();
 
+    virtual void projOnMouseClick(const QPointF&) override;
+
     /**
      * @brief projOnObjectStartMove method inherited from QGVItem, it is called when the icon starts moving.
      * Parameters: point where the movement starts.
@@ -97,6 +99,8 @@ Q_SIGNALS:
      * Parameters: point where the movement stops.
      */
     void onStopMove(const QPointF&);
+
+    void onClick(const QPointF&);
 
 private:
     /**

@@ -4,7 +4,6 @@
 #include "demoitem.h"
 
 class QGVWidgetMeasure;
-
 /**
  * @brief The MeasuresDemo class is a demo class which places a QGVWidgetMeasure on the map
  */

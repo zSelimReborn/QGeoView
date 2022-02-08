@@ -24,11 +24,11 @@ void MeasuresDemo::onInit()
      * List of available widgets.
      */
 
-    // Rome and Naples as starting positions of the pins
     mWidgetMeasure = new QGVWidgetMeasure();
     QList<QPair<QString, QGVWidget*>> widgets = {
         { "QGVWidgetMeasure",  mWidgetMeasure}
     };
+
     /*
      *
      * Widgets will be owned by map.

@@ -3,5 +3,12 @@
         <file>resources/compass.png</file>
         <file>resources/pin-icon.png</file>
         <file>resources/pin-icon-highlight.png</file>
+        <file>resources/map.geojson</file>
+        <file>resources/POINT.shp</file>
+        <file>resources/POINT.shx</file>
+        <file>resources/POLYGON.shp</file>
+        <file>resources/POLYGON.shx</file>
+        <file>resources/POLYLINE.shp</file>
+        <file>resources/POLYLINE.shx</file>
     </qresource>
 </RCC>
