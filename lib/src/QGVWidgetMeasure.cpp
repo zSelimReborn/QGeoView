@@ -277,7 +277,7 @@ bool QGVWidgetMeasure::shouldShowPinLine()
 QGVIcon* QGVWidgetMeasure::createNewPin(const QGV::GeoPos& pos)
 {
     const int pinZValue = 20;
-    auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale;
+    auto iconFlags = QGV::ItemFlag::Movable | QGV::ItemFlag::Transformed | QGV::ItemFlag::IgnoreScale | QGV::ItemFlag::Clickable;
 
     QGVIcon* newIcon = new QGVIcon(getMap()->rootItem(), pos, getIconPin(), getIconSize(), getIconAnchor(), iconFlags);
     newIcon->setIconMovement(getIconPinMovement());
@@ -326,6 +326,9 @@ void QGVWidgetMeasure::addPinToMap()
 
     connect(leftPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onLeftPinStartMove);
     connect(rightPin, &QGVIcon::onStartMove, this, &QGVWidgetMeasure::onRightPinStartMove);
+
+    connect(leftPin, &QGVIcon::onClick, this, &QGVWidgetMeasure::onLeftPinStartMove);
+    connect(rightPin, &QGVIcon::onClick, this, &QGVWidgetMeasure::onRightPinStartMove);
 
     onPinMove(QPointF());
 }
@@ -392,9 +395,6 @@ void QGVWidgetMeasure::updateBallons(const qreal& distanceMeters, const qreal& l
 
     leftBallon->setBallonText(leftBallonText);
     rightBallon->setBallonText(rightBallonText);
-
-    leftBallon->repaint();
-    rightBallon->repaint();
 }
 
 void QGVWidgetMeasure::moveBallons()
