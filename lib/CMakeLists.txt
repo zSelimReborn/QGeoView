@@ -110,6 +110,8 @@ add_library(qgeoview SHARED
     ${RCC_SOURCES}
     )
 
+add_dependencies(qgeoview shapelib)
+
 target_include_directories(qgeoview
     PUBLIC
         include
@@ -144,5 +146,3 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
         DESTINATION include
         FILES_MATCHING PATTERN "*.h*"
 )
-
-add_dependencies(qgeoview shapelib)
