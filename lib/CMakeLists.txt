@@ -16,7 +16,7 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
 ExternalProject_Add(shapelib
         GIT_REPOSITORY https://github.com/OSGeo/shapelib.git
         BUILD_ALWAYS 1
-        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib
         TIMEOUT 360
         )
 set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.so)
@@ -110,6 +110,8 @@ add_library(qgeoview SHARED
     ${RCC_SOURCES}
     )
 
+add_dependencies(qgeoview shapelib)
+
 target_include_directories(qgeoview
     PUBLIC
         include
@@ -144,5 +146,3 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
         DESTINATION include
         FILES_MATCHING PATTERN "*.h*"
 )
-
-add_dependencies(qgeoview shapelib)
