@@ -19,9 +19,17 @@ ExternalProject_Add(shapelib
         CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} #-DCMAKE_INSTALL_LIBDIR=${LIB_INSTALL_LOCATION}/lib
         TIMEOUT 360
         )
+#main library
 set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.so)
+#first soft link
+set(LIBSL1SHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.so.1)
+#second soft link
+set(LIBSL2SHAPELIB "${EXTERNAL_INSTALL_LOCATION}/lib/libshp.so.1.5.0")
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/shp.lib)
+    #no soft links produced on Windows
+    unset(LIBSL1SHAPELIB)
+    unset(LIBSL2SHAPELIB)
     add_custom_command(
             TARGET shapelib
             POST_BUILD
@@ -31,9 +39,41 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.dylib)
+    #first soft link
+    set(LIBSL1SHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.1.dylib)
+    #second soft link
+    set(LIBSL2SHAPELIB "${EXTERNAL_INSTALL_LOCATION}/lib/libshp.1.5.0.dylib")
+
 endif()
 set(LIBSHAPELIB ${LIBSHAPELIB} PARENT_SCOPE)
 
+add_custom_command(
+        TARGET shapelib
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${LIBSHAPELIB}
+        ${LIB_INSTALL_LOCATION}
+)
+
+if (LIBSL1SHAPELIB)
+    add_custom_command(
+        TARGET shapelib
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${LIBSL1SHAPELIB}
+        ${LIB_INSTALL_LOCATION}
+    )
+endif()
+
+if (LIBSL2SHAPELIB)
+    add_custom_command(
+        TARGET shapelib
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${LIBSL2SHAPELIB}
+        ${LIB_INSTALL_LOCATION}
+    )
+endif()
 
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
