@@ -5,10 +5,8 @@ project(QGeoView LANGUAGES C CXX)
 include(ExternalProject)
 
 # Set the external install location
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
-
-if(NOT LIB_INSTALL_LOCATION)
-    set(LIB_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
+if(NOT EXTERNAL_INSTALL_LOCATION)
+    set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 endif()
 
 # Add to the includes
