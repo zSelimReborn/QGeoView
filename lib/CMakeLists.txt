@@ -16,19 +16,19 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
 ExternalProject_Add(shapelib
         GIT_REPOSITORY https://github.com/OSGeo/shapelib.git
         BUILD_ALWAYS 1
-	CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
+	    CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
         TIMEOUT 360
         )
 set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.a)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/shp.lib)
-    add_custom_command(
-            TARGET shapelib
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy
-            ${EXTERNAL_INSTALL_LOCATION}/bin/shp.dll
-            ${CMAKE_BINARY_DIR}
-    )
+#    add_custom_command(
+#            TARGET shapelib
+#            POST_BUILD
+#            COMMAND ${CMAKE_COMMAND} -E copy
+#            ${EXTERNAL_INSTALL_LOCATION}/bin/shp.dll
+#            ${CMAKE_BINARY_DIR}
+#    )
 elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.a)
 endif()
