@@ -3,7 +3,7 @@
 
 #include "QGVShapeLine.h"
 
-#include <QVector>
+#include <QList>
 #include <QPainterPath>
 
 class QGV_LIB_DECL QGVShapePolygon : public QGVShapeLine
@@ -15,7 +15,7 @@ protected:
     void projPaint(QPainter*) override;
 
 private:
-    QVector<QGV::GeoPos> mGeoCoordinates;
+    QList<QGV::GeoPos> mGeoCoordinates;
 };
 
 #endif // QGVSHAPEPOLYGON_H

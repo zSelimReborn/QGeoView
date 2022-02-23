@@ -1,7 +1,7 @@
 #ifndef QGVLAYERFILE_H
 #define QGVLAYERFILE_H
 
-#include <QVector>
+#include <QList>
 #include <QMap>
 #include <QVariant>
 
@@ -16,12 +16,12 @@ enum class QGVLayerShapeType
 
 struct QGV_LIB_DECL QGVLayerItemData
 {
-    QVector<QGV::GeoPos> mCoords;
+    QList<QGV::GeoPos> mCoords;
     QMap<QString, QVariant> mProps;
     QGVLayerShapeType mType;
 
 
-    using GeoCoordinates = QVector<QGV::GeoPos>;
+    using GeoCoordinates = QList<QGV::GeoPos>;
     using Properties = QMap<QString, QVariant>;
 
     QGVLayerItemData(const GeoCoordinates&, const Properties&, const QGVLayerShapeType&);
@@ -52,7 +52,7 @@ protected:
 
 private:
     QString mSourceFileName;
-    QVector<QGVDrawItem*> mShapes;
+    QList<QGVDrawItem*> mShapes;
 };
 
 #endif // QGVLAYERFILE_H

@@ -22,7 +22,7 @@ protected:
     QPointF projAnchor() const override;
 
 private:
-    QVector<QGV::GeoPos> mGeoCoordinates;
+    QList<QGV::GeoPos> mGeoCoordinates;
     QPolygonF mProjPolygon;
 };
 

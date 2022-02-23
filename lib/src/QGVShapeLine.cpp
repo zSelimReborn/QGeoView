@@ -39,7 +39,7 @@ QPainterPath QGVShapeLine::projShape() const
 
 QPointF QGVShapeLine::projAnchor() const
 {
-    return (mProjPolygon.size() > 0)? mProjPolygon.first() : QPointF();
+    return (!mProjPolygon.empty())? mProjPolygon.first() : QPointF();
 }
 
 void QGVShapeLine::projPaint(QPainter* painter)
