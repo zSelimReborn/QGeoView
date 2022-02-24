@@ -1,5 +1,7 @@
 #include "vectorlayers.h"
 
+#include "QGeoView/MVTUtils.h"
+
 #include <QGeoView/QGVGlobal.h>
 #include <QGeoView/QGVLayerGeoJson.h>
 #include <QGeoView/QGVLayerESRI.h>
@@ -67,6 +69,20 @@ void VectorLayersDemo::onInit()
           mLayerESRI->setSourceFileName(tempPolygonFile);
           mLayerESRI->activate();
       }
+    }
+
+    const QString mvtFile = ":/resources/test2048.mvt";
+    const QString mvtTempFile = tempDir.path() + "/shapes.mvt";
+
+    if (tempDir.isValid()) {
+        if (QFile::copy(mvtFile, mvtTempFile)) {
+            try {
+                const QGV::GeoTilePos tile{1, QPoint(0, 0)};
+                MVTUtils::buildFromFile(tile, mvtTempFile);
+            }  catch (const std::exception& exception) {
+                qDebug() << "ERROR READING MVT:" << exception.what();
+            }
+        }
     }
 
     selector()->selectAll();

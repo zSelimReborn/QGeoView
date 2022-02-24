@@ -34,6 +34,13 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 set(LIBSHAPELIB ${LIBSHAPELIB} PARENT_SCOPE)
 
+# External lib for reading pbf/mvt files
+ExternalProject_Add(protozero
+        GIT_REPOSITORY https://github.com/mapbox/protozero.git
+        BUILD_ALWAYS 1
+        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
+        TIMEOUT 360
+        )
 
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
@@ -108,9 +115,11 @@ add_library(qgeoview SHARED
     src/QGVShapeLine.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     ${RCC_SOURCES}
-    )
+    include/QGeoView/protobuf/QGVMvtTypes.h
+    include/QGeoView/MVTUtils.h src/MVTUtils.cpp)
 
 add_dependencies(qgeoview shapelib)
+add_dependencies(qgeoview protozero)
 
 target_include_directories(qgeoview
     PUBLIC

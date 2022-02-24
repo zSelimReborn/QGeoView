@@ -10,5 +10,7 @@
         <file>resources/POLYGON.shx</file>
         <file>resources/POLYLINE.shp</file>
         <file>resources/POLYLINE.shx</file>
+        <file>resources/shapes.mvt</file>
+        <file>resources/test2048.mvt</file>
     </qresource>
 </RCC>
