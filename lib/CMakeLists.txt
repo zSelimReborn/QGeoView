@@ -59,6 +59,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVImage.h
     include/QGeoView/QGVLayerTiles.h
     include/QGeoView/QGVLayerTilesOnline.h
+    include/QGeoView/QGVVectorTilesOnline.h
     include/QGeoView/QGVLayerGoogle.h
     include/QGeoView/QGVLayerBing.h
     include/QGeoView/QGVLayerOSM.h
@@ -93,6 +94,7 @@ add_library(qgeoview SHARED
     src/QGVImage.cpp
     src/QGVLayerTiles.cpp
     src/QGVLayerTilesOnline.cpp
+    src/QGVVectorTilesOnline.cpp
     src/QGVLayerGoogle.cpp
     src/QGVLayerBing.cpp
     src/QGVLayerOSM.cpp
