@@ -31,13 +31,11 @@ public:
 
 protected:
     virtual QString tilePosToUrl(const QGV::GeoTilePos& tilePos) const = 0;
-
-private:
     void onProjection(QGVMap* geoMap) override;
     void onClean() override;
     void request(const QGV::GeoTilePos& tilePos) override;
     void cancel(const QGV::GeoTilePos& tilePos) override;
-    void onReplyFinished(QNetworkReply* reply);
+    virtual void onReplyFinished(QNetworkReply* reply);
     void removeReply(const QGV::GeoTilePos& tilePos);
 
 private:

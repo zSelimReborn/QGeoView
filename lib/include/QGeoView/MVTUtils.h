@@ -14,14 +14,14 @@ class QGVDrawItem;
 class QGV_LIB_DECL MVTUtils
 {
 public:
-    static QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&);
-    static QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const std::string&);
+    static QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&, const QString&);
+    static QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const std::string&, const QString&);
     static QGV::GeoPos toLatLong(const QGV::GeoTilePos&, const QPoint&, const std::int32_t&);
     static QGVLayerShapeType toLayerShapeType(const GeomType&);
 
 private:
     static std::string readFile(const QString&);
-    static QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const std::string&);
+    static QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const std::string&, const QString&);
 };
 
 using packed_iterator_type = protozero::iterator_range<protozero::pbf_reader::const_uint32_iterator>;

@@ -3,6 +3,8 @@
 
 #include "demoitem.h"
 
+class QGVMvtLayerTiles;
+
 class MVTVectorLayerDemo : public DemoItem
 {
     Q_OBJECT
@@ -23,6 +25,7 @@ private:
     void onEnd() override;
 
 private:
+    QGVMvtLayerTiles* mMvtLayer;
 };
 
 #endif // MVTVECTORLAYER_H

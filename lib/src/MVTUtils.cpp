@@ -5,15 +5,15 @@
 
 #include <fstream>
 
-QList<QGVDrawItem*> MVTUtils::buildFromFile(const QGV::GeoTilePos& tile, const QString& fileName)
+QList<QGVDrawItem*> MVTUtils::buildFromFile(const QGV::GeoTilePos& tile, const QString& fileName, const QString& tileType)
 {
     const auto fileContent = readFile(fileName);
-    return buildShapes(tile, fileContent);
+    return buildShapes(tile, fileContent, tileType);
 }
 
-QList<QGVDrawItem*> MVTUtils::buildFromContent(const QGV::GeoTilePos& tile, const std::string& content)
+QList<QGVDrawItem*> MVTUtils::buildFromContent(const QGV::GeoTilePos& tile, const std::string& content, const QString& tileType)
 {
-    return buildShapes(tile, content);
+    return buildShapes(tile, content, tileType);
 }
 
 std::string MVTUtils::readFile(const QString& fileName)
@@ -31,7 +31,7 @@ std::string MVTUtils::readFile(const QString& fileName)
 
 }
 
-QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std::string& fileContent)
+QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std::string& fileContent, const QString& tileType)
 {
     QList<QGVDrawItem*> shapes{};
 
@@ -47,6 +47,11 @@ QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std
             }
 
             qDebug() << "[MVT] Parsing layer:" << layer.getName();
+
+            if (layer.getName().toLower() != tileType.toLower()) {
+                qDebug() << "[MVT] Layer" << layer.getName() << "to skip.";
+                continue;
+            }
 
             const auto featureCount = layer.getFeatureCount();
             if (featureCount == 0) { qDebug() << "[MVT]" << layer.getName() << "empty"; continue; }
