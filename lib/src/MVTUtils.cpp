@@ -56,6 +56,8 @@ QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std
             const auto featureCount = layer.getFeatureCount();
             if (featureCount == 0) { qDebug() << "[MVT]" << layer.getName() << "empty"; continue; }
 
+            qDebug() << "[MVT] Parsing" << featureCount << "features in" << "tile" << tile;
+
             for (int i = 0; i < featureCount; ++i) {
                 const MVTFeature feature{layer.getFeature(i), layer};
                 const auto featureId = feature.getIdentifier();

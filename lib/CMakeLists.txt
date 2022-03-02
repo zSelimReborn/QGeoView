@@ -81,6 +81,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVShapeIcon.h
     include/QGeoView/QGVShapePolygon.h
     include/QGeoView/QGVShapeLine.h
+    include/QGeoView/QGVVectorTile.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -117,6 +118,7 @@ add_library(qgeoview SHARED
     src/QGVShapeIcon.cpp
     src/QGVShapePolygon.cpp
     src/QGVShapeLine.cpp
+    src/QGVVectorTile.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     ${RCC_SOURCES}
     include/QGeoView/protobuf/QGVMvtTypes.h

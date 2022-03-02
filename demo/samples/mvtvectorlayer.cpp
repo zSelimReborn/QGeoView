@@ -26,15 +26,15 @@ QString MVTVectorLayerDemo::comment() const
 void MVTVectorLayerDemo::onInit()
 {
 
-    QTemporaryDir tempDir;
+    /* QTemporaryDir tempDir;
     const QString mvtFile = ":/resources/shapes.mvt";
     const QString mvtTempFile = tempDir.path() + "/shapes.mvt";
 
     if (tempDir.isValid()) {
         if (QFile::copy(mvtFile, mvtTempFile)) {
             try {
-                const QGV::GeoTilePos tile{6, QPoint(42, 17)};
-                const auto shapes = MVTUtils::buildFromFile(tile, mvtTempFile, "boundaries");
+                const QGV::GeoTilePos tile{1, QPoint(0, 0)};
+                const auto shapes = MVTUtils::buildFromFile(tile, mvtTempFile, "country_boundaries");
                 qDebug() << "Created" << shapes.size() << "shapes";
                 for (const auto& shape : shapes) {
                     geoMap()->addItem(shape);
@@ -43,18 +43,19 @@ void MVTVectorLayerDemo::onInit()
                 qDebug() << "[MVT] ERROR READING FILE:" << exception.what();
             }
         }
-    }
+    } */
 
-    /* QGV::setPrintDebug(true);
-    const quint32 tileSize{256};
-    const QString apiKey{"*****"};
+    //QGV::setPrintDebug(true);
+    const quint32 tileSize{512};
+    const QString apiUrl{"https://tile.nextzen.org/tilezen/vector/v1/${tilesize}/all/${z}/${x}/${y}.mvt?api_key=${api_key}"};
+    const QString apiKey{"******"};
     const QString tileType{"boundaries"};
 
-    mMvtLayer = new QGVMvtLayerTiles(tileSize);
+    mMvtLayer = new QGVMvtLayerTiles(tileSize, apiUrl);
     mMvtLayer->setApiKey(apiKey);
     mMvtLayer->setTileType(tileType);
 
-    geoMap()->addItem(mMvtLayer); */
+    geoMap()->addItem(mMvtLayer);
 
     selector()->selectAll();
 }

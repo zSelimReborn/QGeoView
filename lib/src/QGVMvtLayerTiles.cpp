@@ -3,7 +3,7 @@
 
 namespace {
 // clang-format off
-const QString DefaultUrlTemplate = "https://tile.nextzen.org/tilezen/vector/v1/${tilesize}/all/${z}/${x}/${y}.mvt?api_key=${api_key}";
+const QString DefaultUrlTemplate = "https://api.mapbox.com/v4/mapbox.country-boundaries-v1/${z}/${x}/${y}.mvt?access_token=${api_key}";
 // clang-format on
 }
 

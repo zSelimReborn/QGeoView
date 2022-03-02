@@ -1,6 +1,7 @@
 #include "QGVVectorTilesOnline.h"
 
 #include "QGVDrawItem.h"
+#include "QGVVectorTile.h"
 
 QGVVectorTilesOnline::QGVVectorTilesOnline() :
     bHasApiKey{false},
@@ -38,11 +39,8 @@ void QGVVectorTilesOnline::onReplyFinished(QNetworkReply *reply)
     removeReply(tilePos);
     const auto rawImage = reply->readAll();
     const auto shapes = buildShapes(tilePos, rawImage);
-    for (const auto& shape : shapes) {
-        onTile(tilePos, shape);
-        // removeItem(shape);
-        // addItem(shape);
-    }
+    const auto vectorTileContainer = new QGVVectorTile(this, shapes);
+    onTile(tilePos, vectorTileContainer);
 }
 
 void QGVVectorTilesOnline::setHasApiKey(const bool& val)
