@@ -48,7 +48,7 @@ void MVTVectorLayerDemo::onInit()
     //QGV::setPrintDebug(true);
     const quint32 tileSize{512};
     const QString apiUrl{"https://tile.nextzen.org/tilezen/vector/v1/${tilesize}/all/${z}/${x}/${y}.mvt?api_key=${api_key}"};
-    const QString apiKey{"******"};
+    const QString apiKey{"*****"};
     const QString tileType{"boundaries"};
 
     mMvtLayer = new QGVMvtLayerTiles(tileSize, apiUrl);
@@ -57,7 +57,7 @@ void MVTVectorLayerDemo::onInit()
 
     geoMap()->addItem(mMvtLayer);
 
-    selector()->selectAll();
+    selector()->addItem("MVT Layer", std::bind(&MVTVectorLayerDemo::setSelected, this, mMvtLayer, std::placeholders::_1));
 }
 
 void MVTVectorLayerDemo::onStart()
@@ -68,4 +68,13 @@ void MVTVectorLayerDemo::onStart()
 void MVTVectorLayerDemo::onEnd()
 {
     selector()->hide();
+}
+
+void MVTVectorLayerDemo::setSelected(QGVLayer* layer, bool selected)
+{
+    if (layer == nullptr) {
+        return;
+    }
+
+    layer->setVisible(selected);
 }

@@ -28,8 +28,8 @@ void VectorLayersDemo::onInit()
     const QString layerJson = ":/resources/map.geojson";
     mLayerJson = new QGVLayerGeoJson(geoMap()->rootItem(), layerJson);
     // Uncomment here for geojson layer
-    // geoMap()->addItem(mLayerJson);
-    // mLayerJson->activate();
+    geoMap()->addItem(mLayerJson);
+    mLayerJson->activate();
 
     const QString layerPointESRIShp = ":/resources/POINT.shp";
     const QString layerPointESRIShx = ":/resources/POINT.shx";
@@ -68,6 +68,9 @@ void VectorLayersDemo::onInit()
           mLayerESRI->activate();
       }
     }
+
+    selector()->addItem("Geo JSON", std::bind(&VectorLayersDemo::setSelected, this, mLayerJson, std::placeholders::_1));
+    selector()->addItem("ESRI Shapefile", std::bind(&VectorLayersDemo::setSelected, this, mLayerESRI, std::placeholders::_1));
 }
 
 void VectorLayersDemo::onStart()
@@ -79,3 +82,13 @@ void VectorLayersDemo::onEnd()
 {
     selector()->hide();
 }
+
+void VectorLayersDemo::setSelected(QGVLayer* layer, bool selected)
+{
+    if (layer == nullptr) {
+        return;
+    }
+
+    layer->setVisible(selected);
+}
+

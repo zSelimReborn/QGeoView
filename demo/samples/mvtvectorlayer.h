@@ -3,6 +3,7 @@
 
 #include "demoitem.h"
 
+class QGVLayer;
 class QGVMvtLayerTiles;
 
 class MVTVectorLayerDemo : public DemoItem
@@ -16,6 +17,8 @@ public:
     QString label() const override;
 
     QString comment() const override;
+
+    void setSelected(QGVLayer* layer, bool selected);
 
 private:
     void onInit() override;
