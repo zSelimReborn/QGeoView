@@ -51,9 +51,16 @@ void MVTVectorLayerDemo::onInit()
     const QString apiKey{"*****"};
     const QString tileType{"boundaries"};
 
+    const QString pointsIcon{":/resources/pin-icon-highlight.png"};
+    const QColor linesColor{Qt::red};
+    const QColor polygonsColor{Qt::red};
+
     mMvtLayer = new QGVMvtLayerTiles(tileSize, apiUrl);
     mMvtLayer->setApiKey(apiKey);
     mMvtLayer->setTileType(tileType);
+    mMvtLayer->setPointsIcon(pointsIcon);
+    mMvtLayer->setLinesColor(linesColor);
+    mMvtLayer->setPolygonsColor(polygonsColor);
 
     geoMap()->addItem(mMvtLayer);
 

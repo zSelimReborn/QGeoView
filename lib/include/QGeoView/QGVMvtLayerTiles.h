@@ -3,6 +3,8 @@
 
 #include "QGVVectorTilesOnline.h"
 
+class MVTUtils;
+
 class QGV_LIB_DECL QGVMvtLayerTiles : public QGVVectorTilesOnline
 {
     Q_OBJECT
@@ -20,6 +22,15 @@ public:
     void setTileType(const QString&);
     QString getTileType() const;
 
+    void setPointsIcon(const QString&);
+    QString getPointsIcon() const;
+
+    void setLinesColor(const QColor&);
+    QColor getLinesColor() const;
+
+    void setPolygonsColor(const QColor&);
+    QColor getPolygonsColor() const;
+
 protected:
     QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const QByteArray&) override;
 
@@ -32,6 +43,8 @@ private:
     QString mUrl;
     quint32 mTileSize;
     QString mTileType;
+
+    MVTUtils* mParser;
 };
 
 #endif // QGVMVTLAYERTILES_H

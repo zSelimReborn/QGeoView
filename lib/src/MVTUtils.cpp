@@ -5,6 +5,12 @@
 
 #include <fstream>
 
+MVTUtils::MVTUtils() :
+    mPointsIcon{":/resources/pin-icon.png"},
+    mLinesColor{Qt::black},
+    mPolygonsColor{Qt::black}
+{ }
+
 QList<QGVDrawItem*> MVTUtils::buildFromFile(const QGV::GeoTilePos& tile, const QString& fileName, const QString& tileType)
 {
     const auto fileContent = readFile(fileName);
@@ -81,7 +87,7 @@ QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std
                     }
 
                     auto shapeItemData = QGVLayerItemData(coordinates, properties, shapeType);
-                    auto shape = QGVLayerFile::createNewShape(nullptr, shapeItemData);
+                    auto shape = QGVLayerFile::createNewShape(nullptr, shapeItemData, getPointsIcon(), getLinesColor(), getPolygonsColor());
                     shapes.append(shape);
                 }
             }
@@ -111,6 +117,36 @@ QGV::GeoPos MVTUtils::toLatLong(const QGV::GeoTilePos& tile, const QPoint& point
     double lat = 360 / M_PI * qAtan(qExp(y2 * M_PI / 180)) - 90;
 
     return QGV::GeoPos{lat, lng};
+}
+
+void MVTUtils::setPointsIcon(const QString& icon)
+{
+    mPointsIcon = icon;
+}
+
+QString MVTUtils::getPointsIcon() const
+{
+    return mPointsIcon;
+}
+
+void MVTUtils::setLinesColor(const QColor& color)
+{
+    mLinesColor = color;
+}
+
+QColor MVTUtils::getLinesColor() const
+{
+    return mLinesColor;
+}
+
+void MVTUtils::setPolygonsColor(const QColor& color)
+{
+    mPolygonsColor = color;
+}
+
+QColor MVTUtils::getPolygonsColor() const
+{
+    return mPolygonsColor;
 }
 
 QGVLayerShapeType MVTUtils::toLayerShapeType(const GeomType& geomType)

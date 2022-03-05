@@ -29,6 +29,7 @@ struct QGV_LIB_DECL QGVLayerItemData
     Properties getProperties();
     QGVLayerShapeType getType();
     QVariant getProperty(const QString&);
+    void setProperty(const QString&, const QVariant&);
 };
 
 class QGV_LIB_DECL QGVLayerFile : public QGVLayer
@@ -42,6 +43,7 @@ public:
     void activate();
 
     static QGVDrawItem* createNewShape(QGVItem*, QGVLayerItemData&);
+    static QGVDrawItem* createNewShape(QGVItem*, QGVLayerItemData&, const QString&, const QColor&, const QColor&);
 
 protected:
     void addShape(QGVDrawItem*);

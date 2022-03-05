@@ -14,14 +14,30 @@ class QGVDrawItem;
 class QGV_LIB_DECL MVTUtils
 {
 public:
-    static QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&, const QString&);
-    static QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const std::string&, const QString&);
-    static QGV::GeoPos toLatLong(const QGV::GeoTilePos&, const QPoint&, const std::int32_t&);
-    static QGVLayerShapeType toLayerShapeType(const GeomType&);
+    MVTUtils();
+    QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&, const QString&);
+    QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const std::string&, const QString&);
+    QGV::GeoPos toLatLong(const QGV::GeoTilePos&, const QPoint&, const std::int32_t&);
+    QGVLayerShapeType toLayerShapeType(const GeomType&);
+
+public:
+    void setPointsIcon(const QString&);
+    QString getPointsIcon() const;
+
+    void setLinesColor(const QColor&);
+    QColor getLinesColor() const;
+
+    void setPolygonsColor(const QColor&);
+    QColor getPolygonsColor() const;
 
 private:
-    static std::string readFile(const QString&);
-    static QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const std::string&, const QString&);
+    std::string readFile(const QString&);
+    QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const std::string&, const QString&);
+
+private:
+    QString mPointsIcon;
+    QColor mLinesColor;
+    QColor mPolygonsColor;
 };
 
 using packed_iterator_type = protozero::iterator_range<protozero::pbf_reader::const_uint32_iterator>;

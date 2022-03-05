@@ -76,6 +76,11 @@ QVariant QGVLayerItemData::getProperty(const QString& prop)
     return mProps.value(prop);
 }
 
+void QGVLayerItemData::setProperty(const QString& property, const QVariant& value)
+{
+    mProps.insert(property, value);
+}
+
 QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& itemData)
 {
     const QString shapeIcon = ":/resources/pin-icon.png";
@@ -88,6 +93,27 @@ QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& ite
             return new QGVShapeLine(parent, itemData);
             break;
         case QGVLayerShapeType::Polygon:
+            return new QGVShapePolygon(parent, itemData);
+            break;
+    }
+
+    return nullptr;
+}
+
+QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& itemData, const QString& pointIcon, const QColor& lineColor, const QColor& polygonColor)
+{
+    switch (itemData.getType()) {
+        case QGVLayerShapeType::Point:
+            return new QGVShapeIcon(parent, itemData, pointIcon);
+            break;
+        case QGVLayerShapeType::Line:
+            itemData.setProperty("stroke", lineColor);
+            return new QGVShapeLine(parent, itemData);
+            break;
+        case QGVLayerShapeType::Polygon:
+            itemData.setProperty("stroke", polygonColor);
+            itemData.setProperty("fill", polygonColor);
+            itemData.setProperty("fill-opacity", 0.5);
             return new QGVShapePolygon(parent, itemData);
             break;
     }

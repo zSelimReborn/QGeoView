@@ -8,12 +8,16 @@ const QString DefaultUrlTemplate = "https://api.mapbox.com/v4/mapbox.country-bou
 }
 
 QGVMvtLayerTiles::QGVMvtLayerTiles(const quint32& tileSize) :
-    mTileSize{tileSize},
-    mUrl{DefaultUrlTemplate},
-    mTileType{"all"}
+    QGVVectorTilesOnline()
 {
     setName("Tilezen vector tiles");
     setDescription("");
+
+    mTileSize = tileSize;
+    mUrl = DefaultUrlTemplate;
+    mTileType = "all";
+
+    mParser = new MVTUtils();
 }
 
 QGVMvtLayerTiles::QGVMvtLayerTiles(const quint32& tileSize, const QString& url) :
@@ -83,5 +87,35 @@ QString QGVMvtLayerTiles::tilePosToUrl(const QGV::GeoTilePos &tilePos) const
 
 QList<QGVDrawItem*> QGVMvtLayerTiles::buildShapes(const QGV::GeoTilePos& tile, const QByteArray& data)
 {
-    return MVTUtils::buildFromContent(tile, data.toStdString(), getTileType());
+    return mParser->buildFromContent(tile, data.toStdString(), getTileType());
+}
+
+void QGVMvtLayerTiles::setPointsIcon(const QString& icon)
+{
+    mParser->setPointsIcon(icon);
+}
+
+QString QGVMvtLayerTiles::getPointsIcon() const
+{
+    return mParser->getPointsIcon();
+}
+
+void QGVMvtLayerTiles::setLinesColor(const QColor& color)
+{
+    mParser->setLinesColor(color);
+}
+
+QColor QGVMvtLayerTiles::getLinesColor() const
+{
+    return mParser->getLinesColor();
+}
+
+void QGVMvtLayerTiles::setPolygonsColor(const QColor& color)
+{
+    mParser->setPolygonsColor(color);
+}
+
+QColor QGVMvtLayerTiles::getPolygonsColor() const
+{
+    return mParser->getPolygonsColor();
 }
