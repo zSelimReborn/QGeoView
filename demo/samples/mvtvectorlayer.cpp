@@ -1,6 +1,5 @@
 #include "mvtvectorlayer.h"
 
-#include "QGeoView/MVTUtils.h"
 #include "QGeoView/QGVMvtLayerTiles.h"
 
 #include "QGeoView/QGVDrawItem.h"

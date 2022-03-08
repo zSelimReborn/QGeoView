@@ -1,28 +1,26 @@
-#include "MVTUtils.h"
+#include "QGVMVTParser.h"
 #include "QGVLayerShape.h"
 
 #include <QtMath>
 
 #include <fstream>
 
-MVTUtils::MVTUtils() :
-    mPointsIcon{":/resources/pin-icon.png"},
-    mLinesColor{Qt::black},
-    mPolygonsColor{Qt::black}
+QGVMVTParser::QGVMVTParser() :
+    QGVTileParser()
 { }
 
-QList<QGVDrawItem*> MVTUtils::buildFromFile(const QGV::GeoTilePos& tile, const QString& fileName, const QString& tileType)
+QList<QGVDrawItem*> QGVMVTParser::buildFromFile(const QGV::GeoTilePos& tile, const QString& fileName, const QString& tileType)
 {
     const auto fileContent = readFile(fileName);
     return buildShapes(tile, fileContent, tileType);
 }
 
-QList<QGVDrawItem*> MVTUtils::buildFromContent(const QGV::GeoTilePos& tile, const std::string& content, const QString& tileType)
+QList<QGVDrawItem*> QGVMVTParser::buildFromContent(const QGV::GeoTilePos& tile, const QByteArray& content, const QString& tileType)
 {
-    return buildShapes(tile, content, tileType);
+    return buildShapes(tile, content.toStdString(), tileType);
 }
 
-std::string MVTUtils::readFile(const QString& fileName)
+std::string QGVMVTParser::readFile(const QString& fileName)
 {
     const auto path = fileName.toStdString();
 
@@ -37,7 +35,7 @@ std::string MVTUtils::readFile(const QString& fileName)
 
 }
 
-QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std::string& fileContent, const QString& tileType)
+QList<QGVDrawItem*> QGVMVTParser::buildShapes(const QGV::GeoTilePos& tile, const std::string& fileContent, const QString& tileType)
 {
     QList<QGVDrawItem*> shapes{};
 
@@ -102,54 +100,7 @@ QList<QGVDrawItem*> MVTUtils::buildShapes(const QGV::GeoTilePos& tile, const std
     return shapes;
 }
 
-QGV::GeoPos MVTUtils::toLatLong(const QGV::GeoTilePos& tile, const QPoint& point, const std::int32_t& extent)
-{
-
-    double size = (double)extent * qPow(2, (double)tile.zoom());
-    double x0 = (double)extent * (double)tile.pos().x();
-    double y0 = (double)extent * (double)tile.pos().y();
-
-    double dblY = (double)point.y();
-    double dblX = (double) point.x();
-
-    double y2 = 180 - (dblY + y0) * 360 / size;
-    double lng = (dblX + x0) * 360 / size - 180;
-    double lat = 360 / M_PI * qAtan(qExp(y2 * M_PI / 180)) - 90;
-
-    return QGV::GeoPos{lat, lng};
-}
-
-void MVTUtils::setPointsIcon(const QString& icon)
-{
-    mPointsIcon = icon;
-}
-
-QString MVTUtils::getPointsIcon() const
-{
-    return mPointsIcon;
-}
-
-void MVTUtils::setLinesColor(const QColor& color)
-{
-    mLinesColor = color;
-}
-
-QColor MVTUtils::getLinesColor() const
-{
-    return mLinesColor;
-}
-
-void MVTUtils::setPolygonsColor(const QColor& color)
-{
-    mPolygonsColor = color;
-}
-
-QColor MVTUtils::getPolygonsColor() const
-{
-    return mPolygonsColor;
-}
-
-QGVLayerShapeType MVTUtils::toLayerShapeType(const GeomType& geomType)
+QGVLayerShapeType QGVMVTParser::toLayerShapeType(const GeomType& geomType)
 {
     if (geomType == GeomType::POLYGON) {
         return QGVLayerShapeType::Polygon;

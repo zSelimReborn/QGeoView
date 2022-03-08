@@ -3,7 +3,7 @@
 
 #include "QGVVectorTilesOnline.h"
 
-class MVTUtils;
+class QGVMVTParser;
 
 class QGV_LIB_DECL QGVMvtLayerTiles : public QGVVectorTilesOnline
 {
@@ -44,7 +44,7 @@ private:
     quint32 mTileSize;
     QString mTileType;
 
-    MVTUtils* mParser;
+    QGVMVTParser* mParser;
 };
 
 #endif // QGVMVTLAYERTILES_H

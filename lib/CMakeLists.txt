@@ -60,6 +60,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVLayerTiles.h
     include/QGeoView/QGVLayerTilesOnline.h
     include/QGeoView/QGVVectorTilesOnline.h
+    include/QGeoView/QGVTileParser.h
     include/QGeoView/QGVMvtLayerTiles.h
     include/QGeoView/QGVLayerGoogle.h
     include/QGeoView/QGVLayerBing.h
@@ -97,6 +98,7 @@ add_library(qgeoview SHARED
     src/QGVLayerTiles.cpp
     src/QGVLayerTilesOnline.cpp
     src/QGVVectorTilesOnline.cpp
+    src/QGVTileParser.cpp
     src/QGVMvtLayerTiles.cpp
     src/QGVLayerGoogle.cpp
     src/QGVLayerBing.cpp
@@ -122,7 +124,7 @@ add_library(qgeoview SHARED
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     ${RCC_SOURCES}
     include/QGeoView/protobuf/QGVMvtTypes.h
-    include/QGeoView/MVTUtils.h src/MVTUtils.cpp)
+    include/QGeoView/QGVMVTParser.h src/QGVMVTParser.cpp)
 
 add_dependencies(qgeoview shapelib)
 add_dependencies(qgeoview protozero)

@@ -2,42 +2,25 @@
 #define QGEOVIEW_MVTUTILS_H
 
 #include "QGVGlobal.h"
+#include "QGVTileParser.h"
+#include "QGVLayerShape.h"
 
 #include "protobuf/QGVMvtTypes.h"
-#include "QGVLayerFile.h"
 #include <protozero/pbf_reader.hpp>
-
-#include <QList>
 
 class QGVDrawItem;
 
-class QGV_LIB_DECL MVTUtils
+class QGV_LIB_DECL QGVMVTParser : public QGVTileParser
 {
 public:
-    MVTUtils();
-    QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&, const QString&);
-    QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const std::string&, const QString&);
-    QGV::GeoPos toLatLong(const QGV::GeoTilePos&, const QPoint&, const std::int32_t&);
+    QGVMVTParser();
+    QList<QGVDrawItem*> buildFromFile(const QGV::GeoTilePos&, const QString&, const QString&) override;
+    QList<QGVDrawItem*> buildFromContent(const QGV::GeoTilePos&, const QByteArray&, const QString&) override;
     QGVLayerShapeType toLayerShapeType(const GeomType&);
-
-public:
-    void setPointsIcon(const QString&);
-    QString getPointsIcon() const;
-
-    void setLinesColor(const QColor&);
-    QColor getLinesColor() const;
-
-    void setPolygonsColor(const QColor&);
-    QColor getPolygonsColor() const;
 
 private:
     std::string readFile(const QString&);
     QList<QGVDrawItem*> buildShapes(const QGV::GeoTilePos&, const std::string&, const QString&);
-
-private:
-    QString mPointsIcon;
-    QColor mLinesColor;
-    QColor mPolygonsColor;
 };
 
 using packed_iterator_type = protozero::iterator_range<protozero::pbf_reader::const_uint32_iterator>;

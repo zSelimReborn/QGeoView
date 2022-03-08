@@ -1,5 +1,5 @@
 #include "QGVMvtLayerTiles.h"
-#include "MVTUtils.h"
+#include "QGVMVTParser.h"
 
 namespace {
 // clang-format off
@@ -17,7 +17,7 @@ QGVMvtLayerTiles::QGVMvtLayerTiles(const quint32& tileSize) :
     mUrl = DefaultUrlTemplate;
     mTileType = "all";
 
-    mParser = new MVTUtils();
+    mParser = new QGVMVTParser();
 }
 
 QGVMvtLayerTiles::QGVMvtLayerTiles(const quint32& tileSize, const QString& url) :
@@ -87,7 +87,7 @@ QString QGVMvtLayerTiles::tilePosToUrl(const QGV::GeoTilePos &tilePos) const
 
 QList<QGVDrawItem*> QGVMvtLayerTiles::buildShapes(const QGV::GeoTilePos& tile, const QByteArray& data)
 {
-    return mParser->buildFromContent(tile, data.toStdString(), getTileType());
+    return mParser->buildFromContent(tile, data, getTileType());
 }
 
 void QGVMvtLayerTiles::setPointsIcon(const QString& icon)
