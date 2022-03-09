@@ -12,5 +12,8 @@
         <file>resources/POLYLINE.shx</file>
         <file>resources/shapes.mvt</file>
         <file>resources/test2048.mvt</file>
+        <file>resources/POINT.dbf</file>
+        <file>resources/POLYGON.dbf</file>
+        <file>resources/POLYLINE.dbf</file>
     </qresource>
 </RCC>

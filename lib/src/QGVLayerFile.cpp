@@ -6,6 +6,8 @@
 #include "QGVShapePolygon.h"
 #include "QGVShapeLine.h"
 
+QTemporaryDir QGVLayerFile::internalTempDir{};
+
 QGVLayerFile::QGVLayerFile(QGVItem* parent, const QString& sourceFileName) :
     mSourceFileName(sourceFileName)
 {
@@ -119,4 +121,27 @@ QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& ite
     }
 
     return nullptr;
+}
+
+bool QGVLayerFile::resourceToDisk(const QString& resourceFile, QString& diskFile)
+{
+    if (!QGVLayerFile::internalTempDir.isValid()) { return false; }
+
+    QFileInfo fileInfo{resourceFile};
+    const auto fileName = fileInfo.fileName();
+
+    if (fileName.isEmpty() || fileName.isNull()) { return false; }
+
+    diskFile = QGVLayerFile::internalTempDir.path() + "/" + fileName;
+    return QFile::copy(resourceFile, diskFile);
+}
+
+char* QGVLayerFile::stringToCharArr(const QString& str)
+{
+    const auto fileAsByte = str.toLocal8Bit();
+
+    char* strAsArray = new char[str.length() + 1];
+    snprintf(strAsArray, str.length() + 1, "%s", fileAsByte.data());
+
+    return strAsArray;
 }

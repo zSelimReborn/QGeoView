@@ -4,6 +4,7 @@
 #include <QList>
 #include <QMap>
 #include <QVariant>
+#include <QTemporaryDir>
 
 #include "QGVLayer.h"
 
@@ -45,6 +46,9 @@ public:
     static QGVDrawItem* createNewShape(QGVItem*, QGVLayerItemData&);
     static QGVDrawItem* createNewShape(QGVItem*, QGVLayerItemData&, const QString&, const QColor&, const QColor&);
 
+    static bool resourceToDisk(const QString&, QString&);
+    static char* stringToCharArr(const QString&);
+
 protected:
     void addShape(QGVDrawItem*);
     void clearShapes();
@@ -55,6 +59,9 @@ protected:
 private:
     QString mSourceFileName;
     QList<QGVDrawItem*> mShapes;
+
+private:
+    static QTemporaryDir internalTempDir;
 };
 
 #endif // QGVLAYERFILE_H
