@@ -1,28 +1,29 @@
-#include "mvtvectorlayer.h"
+#include "vectortileslayers.h"
 
 #include "QGeoView/QGVMvtLayerTiles.h"
+#include "QGeoView/QGVLayerJsonTiles.h"
 
 #include "QGeoView/QGVDrawItem.h"
 
 #include <QTemporaryDir>
 
-MVTVectorLayerDemo::MVTVectorLayerDemo(QGVMap* geoMap, QObject* parent)
+VectorTilesOnlineDemo::VectorTilesOnlineDemo(QGVMap* geoMap, QObject* parent)
     : DemoItem(geoMap, SelectorDialog::Multi, parent)
 {}
 
-QString MVTVectorLayerDemo::label() const
+QString VectorTilesOnlineDemo::label() const
 {
     return "Vectorial Layers Online";
 }
 
-QString MVTVectorLayerDemo::comment() const
+QString VectorTilesOnlineDemo::comment() const
 {
     return "QGV now can request vectorial layers online. This includes:<br>"
            "- MVT format<br>"
            "- PBF format<br>";
 }
 
-void MVTVectorLayerDemo::onInit()
+void VectorTilesOnlineDemo::onInit()
 {
 
     /* QTemporaryDir tempDir;
@@ -46,7 +47,7 @@ void MVTVectorLayerDemo::onInit()
 
     //QGV::setPrintDebug(true);
     const quint32 tileSize{512};
-    const QString apiUrl{"https://tile.nextzen.org/tilezen/vector/v1/${tilesize}/all/${z}/${x}/${y}.mvt?api_key=${api_key}"};
+    const QString mvtApiUrl{"https://tile.nextzen.org/tilezen/vector/v1/${tilesize}/all/${z}/${x}/${y}.mvt?api_key=${api_key}"};
     const QString apiKey{"*****"};
     const QString tileType{"boundaries"};
 
@@ -54,29 +55,40 @@ void MVTVectorLayerDemo::onInit()
     const QColor linesColor{Qt::red};
     const QColor polygonsColor{Qt::red};
 
-    mMvtLayer = new QGVMvtLayerTiles(tileSize, apiUrl);
+    mMvtLayer = new QGVMvtLayerTiles(tileSize, mvtApiUrl);
     mMvtLayer->setApiKey(apiKey);
     mMvtLayer->setTileType(tileType);
     mMvtLayer->setPointsIcon(pointsIcon);
     mMvtLayer->setLinesColor(linesColor);
     mMvtLayer->setPolygonsColor(polygonsColor);
 
-    geoMap()->addItem(mMvtLayer);
+    const QString jsonApiUrl{"https://tile.nextzen.org/tilezen/vector/v1/all/${z}/${x}/${y}.json?api_key=${api_key}"};
 
-    selector()->addItem("MVT Layer", std::bind(&MVTVectorLayerDemo::setSelected, this, mMvtLayer, std::placeholders::_1));
+    mJsonLayer = new QGVLayerJsonTiles(tileSize, jsonApiUrl);
+    mJsonLayer->setApiKey(apiKey);
+    mJsonLayer->setTileType("roads");
+    mJsonLayer->setPointsIcon(pointsIcon);
+    mJsonLayer->setLinesColor(linesColor);
+    mJsonLayer->setPolygonsColor(polygonsColor);
+
+    geoMap()->addItem(mMvtLayer);
+    geoMap()->addItem(mJsonLayer);
+
+    selector()->addItem("MVT Layer", std::bind(&VectorTilesOnlineDemo::setSelected, this, mMvtLayer, std::placeholders::_1));
+    selector()->addItem("JSON Layer", std::bind(&VectorTilesOnlineDemo::setSelected, this, mJsonLayer, std::placeholders::_1));
 }
 
-void MVTVectorLayerDemo::onStart()
+void VectorTilesOnlineDemo::onStart()
 {
     selector()->show();
 }
 
-void MVTVectorLayerDemo::onEnd()
+void VectorTilesOnlineDemo::onEnd()
 {
     selector()->hide();
 }
 
-void MVTVectorLayerDemo::setSelected(QGVLayer* layer, bool selected)
+void VectorTilesOnlineDemo::setSelected(QGVLayer* layer, bool selected)
 {
     if (layer == nullptr) {
         return;

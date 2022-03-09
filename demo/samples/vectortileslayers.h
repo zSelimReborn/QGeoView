@@ -5,14 +5,15 @@
 
 class QGVLayer;
 class QGVMvtLayerTiles;
+class QGVLayerJsonTiles;
 
-class MVTVectorLayerDemo : public DemoItem
+class VectorTilesOnlineDemo : public DemoItem
 {
     Q_OBJECT
 
 public:
 
-    explicit MVTVectorLayerDemo(QGVMap* geoMap, QObject* parent = 0);
+    explicit VectorTilesOnlineDemo(QGVMap* geoMap, QObject* parent = 0);
 
     QString label() const override;
 
@@ -29,6 +30,7 @@ private:
 
 private:
     QGVMvtLayerTiles* mMvtLayer;
+    QGVLayerJsonTiles* mJsonLayer;
 };
 
 #endif // MVTVECTORLAYER_H

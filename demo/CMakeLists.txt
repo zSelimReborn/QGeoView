@@ -55,8 +55,8 @@ add_executable(qgeoview-demo
     samples/measures.cpp
     samples/vectorlayers.h
     samples/vectorlayers.cpp
-    samples/mvtvectorlayer.h
-    samples/mvtvectorlayer.cpp
+    samples/vectortileslayers.h
+    samples/vectortileslayers.cpp
 )
 
 
