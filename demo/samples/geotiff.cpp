@@ -1,3 +1,5 @@
+#ifdef USE_GDAL_FEATURES
+
 #include "geotiff.h"
 #include "QGeoView/QGVGeoTiffParser.h"
 #include "QGeoView/QGVLayerFile.h"
@@ -43,3 +45,5 @@ void GeoTiffDemo::onEnd()
 {
     selector()->hide();
 }
+
+#endif

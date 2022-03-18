@@ -43,11 +43,14 @@ ExternalProject_Add(protozero
         )
 
 # In order to work, in CMAKE_PREFIX_PATH you have to indicate gdal install location.
-# TODO: Check variable for compiling or not GDAL. Remember to check also on cpp
-find_package(GDAL REQUIRED)
-if (GDAL_FOUND)
-    message(${GDAL_LIBRARIES})
-    message(${GDAL_INCLUDE_DIRS})
+set(GDAL_LIB_FEATURE "")
+set(GDAL_LIB_HEADERS "")
+if (DEFINED USE_GDAL_FEATURES)
+    find_package(GDAL REQUIRED)
+    if (GDAL_FOUND)
+        set(GDAL_LIB_FEATURE ${GDAL_LIBRARIES})
+        set(GDAL_LIB_HEADERS ${GDAL_INCLUDE_DIRS})
+    endif()
 endif()
 
 qt5_add_resources (RCC_SOURCES resources.qrc)
@@ -153,7 +156,7 @@ target_include_directories(qgeoview
     PRIVATE
         include/QGeoView
 
-    ${GDAL_INCLUDE_DIRS}
+    ${GDAL_LIB_HEADERS}
 )
 
 target_compile_definitions(qgeoview
@@ -169,8 +172,12 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Positioning
         ${LIBSHAPELIB}
-        ${GDAL_LIBRARIES}
+        ${GDAL_LIB_FEATURE}
         )
+
+if (DEFINED USE_GDAL_FEATURES)
+    add_definitions(-DUSE_GDAL_FEATURES)
+endif()
 
 add_library(QGeoView ALIAS qgeoview)
 

@@ -1,3 +1,5 @@
+#ifdef USE_GDAL_FEATURES
+
 #include "QGVGeoTiffParser.h"
 #include "QGVImage.h"
 #include "QGVLayerFile.h"
@@ -103,3 +105,5 @@ QGVImage* QGVGeoTiffParser::buildFromFile(const QString& fileName)
 
     return geoImg;
 }
+
+#endif
