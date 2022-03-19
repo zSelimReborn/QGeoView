@@ -1,16 +1,11 @@
 #ifdef USE_GDAL_FEATURES
 
 #include "geotiff.h"
-#include "QGeoView/QGVGeoTiffParser.h"
-#include "QGeoView/QGVLayerFile.h"
-
-#include "QGeoView/QGVImage.h"
+#include "QGeoView/QGVRasterLayer.h"
 
 GeoTiffDemo::GeoTiffDemo(QGVMap* geoMap, QObject* parent)
     : DemoItem(geoMap, SelectorDialog::Multi, parent)
-{
-    mParser = new QGVGeoTiffParser();
-}
+{ }
 
 QString GeoTiffDemo::label() const
 {
@@ -28,12 +23,23 @@ void GeoTiffDemo::onInit()
     QString tiffTemp;
 
     if (QGVLayerFile::resourceToDisk(tiffResource, tiffTemp)) {
+        mLayer = new QGVRasterLayer(nullptr, tiffTemp);
         qDebug() << "[GTiff] Loading tiff:" << tiffTemp;
-        const auto geoImg = mParser->buildFromFile(tiffTemp);
-        if (geoImg != nullptr) {
-            geoMap()->addItem(geoImg);
-        }
+
+        geoMap()->addItem(mLayer);
+        mLayer->activate();
+
+        selector()->addItem("GeoTiff Layer", std::bind(&GeoTiffDemo::setSelected, this, mLayer, std::placeholders::_1));
     }
+}
+
+void GeoTiffDemo::setSelected(QGVLayer* layer, bool selected)
+{
+    if (layer == nullptr) {
+        return;
+    }
+
+    layer->setVisible(selected);
 }
 
 void GeoTiffDemo::onStart()

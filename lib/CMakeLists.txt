@@ -99,6 +99,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVMVTParser.h
     include/QGeoView/QGVDBFParser.h
     include/QGeoView/QGVGeoTiffParser.h
+    include/QGeoView/QGVRasterLayer.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -145,6 +146,7 @@ add_library(qgeoview SHARED
     src/QGVMVTParser.cpp
     src/QGVDBFParser.cpp
     src/QGVGeoTiffParser.cpp
+    src/QGVRasterLayer.cpp
     )
 
 add_dependencies(qgeoview shapelib)

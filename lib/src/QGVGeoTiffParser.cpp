@@ -68,8 +68,8 @@ bool QGVGeoTiffParser::loadGeometryFromFile(const QString& fileName, QGV::GeoRec
     const auto rowRotation = geoTransformParameters[2];
     const auto columnRotation = geoTransformParameters[4];
 
-    const auto xTopLeftCorner = (origin.x() + 0.f * pixelSize.width() + 0.f * rowRotation);
-    const auto yTopLeftCorner = (origin.y() + 0.f * columnRotation + 0.f * pixelSize.height());
+    const auto xTopLeftCorner = (origin.x());
+    const auto yTopLeftCorner = (origin.y());
     const auto xBottomRightCorner = (origin.x() + rasterWidth * pixelSize.width() + rasterHeight * rowRotation);
     const auto yBottomRightCorner = (origin.y() + rasterWidth * columnRotation + rasterHeight * pixelSize.height());
 

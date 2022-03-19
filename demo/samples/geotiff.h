@@ -5,7 +5,8 @@
 
 #include "demoitem.h"
 
-class QGVGeoTiffParser;
+class QGVRasterLayer;
+class QGVLayer;
 
 class GeoTiffDemo : public DemoItem
 {
@@ -17,6 +18,8 @@ public:
     QString label() const override;
 
     QString comment() const override;
+
+    void setSelected(QGVLayer* layer, bool selected);
 private:
     void onInit() override;
 
@@ -24,7 +27,7 @@ private:
 
     void onEnd() override;
 private:
-    QGVGeoTiffParser* mParser;
+    QGVRasterLayer* mLayer;
 };
 
 #endif // GEOTIFF_H
