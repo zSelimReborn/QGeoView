@@ -15,5 +15,7 @@
         <file>resources/POINT.dbf</file>
         <file>resources/POLYGON.dbf</file>
         <file>resources/POLYLINE.dbf</file>
+        <file>resources/coast.tif</file>
+        <file>resources/venice.tif</file>
     </qresource>
 </RCC>

@@ -42,6 +42,17 @@ ExternalProject_Add(protozero
         TIMEOUT 360
         )
 
+# In order to work, in CMAKE_PREFIX_PATH you have to indicate gdal install location.
+set(GDAL_LIB_FEATURE "")
+set(GDAL_LIB_HEADERS "")
+if (DEFINED USE_GDAL_FEATURES)
+    find_package(GDAL REQUIRED)
+    if (GDAL_FOUND)
+        set(GDAL_LIB_FEATURE ${GDAL_LIBRARIES})
+        set(GDAL_LIB_HEADERS ${GDAL_INCLUDE_DIRS})
+    endif()
+endif()
+
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
 add_library(qgeoview SHARED
@@ -87,6 +98,8 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVVectorTile.h
     include/QGeoView/QGVMVTParser.h
     include/QGeoView/QGVDBFParser.h
+    include/QGeoView/QGVGeoTiffParser.h
+    include/QGeoView/QGVRasterLayer.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -131,7 +144,10 @@ add_library(qgeoview SHARED
     ${RCC_SOURCES}
     include/QGeoView/protobuf/QGVMvtTypes.h
     src/QGVMVTParser.cpp
-    src/QGVDBFParser.cpp)
+    src/QGVDBFParser.cpp
+    src/QGVGeoTiffParser.cpp
+    src/QGVRasterLayer.cpp
+    )
 
 add_dependencies(qgeoview shapelib)
 add_dependencies(qgeoview protozero)
@@ -141,6 +157,8 @@ target_include_directories(qgeoview
         include
     PRIVATE
         include/QGeoView
+
+    ${GDAL_LIB_HEADERS}
 )
 
 target_compile_definitions(qgeoview
@@ -156,7 +174,12 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Positioning
         ${LIBSHAPELIB}
+        ${GDAL_LIB_FEATURE}
         )
+
+if (DEFINED USE_GDAL_FEATURES)
+    add_definitions(-DUSE_GDAL_FEATURES)
+endif()
 
 add_library(QGeoView ALIAS qgeoview)
 
