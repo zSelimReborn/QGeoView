@@ -6,23 +6,21 @@
 class QJsonDocument;
 class QJsonValue;
 
+class QGVJsonTileParser;
+
 class QGV_LIB_DECL QGVLayerGeoJson : public QGVLayerFile
 {
 public:
     QGVLayerGeoJson(QGVItem*, const QString&);
 
-    QGVLayerShapeType getShapeTypeFromString(const QString&);
-
 protected:
     virtual void buildShapes() override;
 
 private:
-    void initializeMappingShapeTypes();
     QJsonDocument readFile();
-    QGVLayerItemData createNewItemDataFromJsonFeature(const QJsonValue&);
 
 private:
-    QMap<QString, QGVLayerShapeType> mMappingShapeTypes;
+    QGVJsonTileParser* mJsonParser;
 };
 
 #endif // QGVLAYERGEOJSON_H

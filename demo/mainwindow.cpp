@@ -26,6 +26,10 @@
 #include "samples/widgets.h"
 #include "samples/measures.h"
 #include "samples/vectorlayers.h"
+#include "samples/vectortileslayers.h"
+
+#include "samples/geotiff.h"
+
 #include "ui_mainwindow.h"
 
 #include <QAction>
@@ -127,7 +131,11 @@ void MainWindow::init()
     mDemo = {
         new WidgetsDemo(ui->geoMap, this),   new BackgroundDemo(ui->geoMap, this), new MouseDemo(ui->geoMap, this),
         new ItemsDemo(ui->geoMap, this),     new FlagsDemo(ui->geoMap, this),      new CustomTiles(ui->geoMap, this),
-        new UtilitiesDemo(ui->geoMap, this), new MeasuresDemo(ui->geoMap, this),   new VectorLayersDemo(ui->geoMap, this)
+        new UtilitiesDemo(ui->geoMap, this), new MeasuresDemo(ui->geoMap, this),   new VectorLayersDemo(ui->geoMap, this),
+        new VectorTilesOnlineDemo(ui->geoMap, this),
+        #ifdef USE_GDAL_FEATURES
+        new GeoTiffDemo(ui->geoMap, this)
+        #endif
     };
     for (DemoItem* item : mDemo) {
         ui->demoList->addItem(item->label());

@@ -15,6 +15,16 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
         Network
         )
 
+# In order to work, in CMAKE_PREFIX_PATH you have to indicate gdal install location.
+set(GDAL_LIB_FEATURE "")
+set(GDAL_LIB_HEADERS "")
+if (DEFINED USE_GDAL_FEATURES)
+    find_package(GDAL REQUIRED)
+    if (GDAL_FOUND)
+        set(GDAL_LIB_FEATURE ${GDAL_LIBRARIES})
+        set(GDAL_LIB_HEADERS ${GDAL_INCLUDE_DIRS})
+    endif()
+endif()
 
 add_executable(qgeoview-demo
     main.cpp
@@ -55,8 +65,15 @@ add_executable(qgeoview-demo
     samples/measures.cpp
     samples/vectorlayers.h
     samples/vectorlayers.cpp
+    samples/vectortileslayers.h
+    samples/vectortileslayers.cpp
+    samples/geotiff.h
+    samples/geotiff.cpp
 )
 
+if (DEFINED USE_GDAL_FEATURES)
+    add_definitions(-DUSE_GDAL_FEATURES)
+endif()
 
 target_link_libraries(qgeoview-demo
         PRIVATE
@@ -64,6 +81,7 @@ target_link_libraries(qgeoview-demo
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Gui
         Qt${QT_VERSION}::Widgets
+        ${GDAL_LIB_FEATURE}
         QGeoView
         )
 

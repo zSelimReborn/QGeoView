@@ -15,10 +15,11 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
 # External lib for reading shapefiles
 ExternalProject_Add(shapelib
         GIT_REPOSITORY https://github.com/OSGeo/shapelib.git
-        BUILD_ALWAYS 1
-	    CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
+        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
+        CMAKE_CACHE_ARGS "-DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=true"
         TIMEOUT 360
         )
+
 set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/libshp.a)
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
     set(LIBSHAPELIB ${EXTERNAL_INSTALL_LOCATION}/lib/shp.lib)
@@ -34,6 +35,24 @@ elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
 endif()
 set(LIBSHAPELIB ${LIBSHAPELIB} PARENT_SCOPE)
 
+# External lib for reading pbf/mvt files
+ExternalProject_Add(protozero
+        GIT_REPOSITORY https://github.com/mapbox/protozero.git
+        BUILD_ALWAYS 1
+        CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
+        TIMEOUT 360
+        )
+
+# In order to work, in CMAKE_PREFIX_PATH you have to indicate gdal install location.
+set(GDAL_LIB_FEATURE "")
+set(GDAL_LIB_HEADERS "")
+if (DEFINED USE_GDAL_FEATURES)
+    find_package(GDAL REQUIRED)
+    if (GDAL_FOUND)
+        set(GDAL_LIB_FEATURE ${GDAL_LIBRARIES})
+        set(GDAL_LIB_HEADERS ${GDAL_INCLUDE_DIRS})
+    endif()
+endif()
 
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
@@ -52,6 +71,11 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVImage.h
     include/QGeoView/QGVLayerTiles.h
     include/QGeoView/QGVLayerTilesOnline.h
+    include/QGeoView/QGVVectorTilesOnline.h
+    include/QGeoView/QGVTileParser.h
+    include/QGeoView/QGVJsonTileParser.h
+    include/QGeoView/QGVMvtLayerTiles.h
+    include/QGeoView/QGVLayerJsonTiles.h
     include/QGeoView/QGVLayerGoogle.h
     include/QGeoView/QGVLayerBing.h
     include/QGeoView/QGVLayerOSM.h
@@ -72,6 +96,11 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVShapeIcon.h
     include/QGeoView/QGVShapePolygon.h
     include/QGeoView/QGVShapeLine.h
+    include/QGeoView/QGVVectorTile.h
+    include/QGeoView/QGVMVTParser.h
+    include/QGeoView/QGVDBFParser.h
+    include/QGeoView/QGVGeoTiffParser.h
+    include/QGeoView/QGVRasterLayer.h
     src/QGVGlobal.cpp
     src/QGVProjection.cpp
     src/QGVProjectionEPSG3857.cpp
@@ -86,6 +115,11 @@ add_library(qgeoview SHARED
     src/QGVImage.cpp
     src/QGVLayerTiles.cpp
     src/QGVLayerTilesOnline.cpp
+    src/QGVVectorTilesOnline.cpp
+    src/QGVTileParser.cpp
+    src/QGVJsonTileParser.cpp
+    src/QGVMvtLayerTiles.cpp
+    src/QGVLayerJsonTiles.cpp
     src/QGVLayerGoogle.cpp
     src/QGVLayerBing.cpp
     src/QGVLayerOSM.cpp
@@ -106,17 +140,26 @@ add_library(qgeoview SHARED
     src/QGVShapeIcon.cpp
     src/QGVShapePolygon.cpp
     src/QGVShapeLine.cpp
+    src/QGVVectorTile.cpp
     src/utils/DistanceUnits.cpp include/QGeoView/utils/DistanceUnits.hpp
     ${RCC_SOURCES}
+    include/QGeoView/protobuf/QGVMvtTypes.h
+    src/QGVMVTParser.cpp
+    src/QGVDBFParser.cpp
+    src/QGVGeoTiffParser.cpp
+    src/QGVRasterLayer.cpp
     )
 
 add_dependencies(qgeoview shapelib)
+add_dependencies(qgeoview protozero)
 
 target_include_directories(qgeoview
     PUBLIC
         include
     PRIVATE
         include/QGeoView
+
+    ${GDAL_LIB_HEADERS}
 )
 
 target_compile_definitions(qgeoview
@@ -132,7 +175,12 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Positioning
         ${LIBSHAPELIB}
+        ${GDAL_LIB_FEATURE}
         )
+
+if (DEFINED USE_GDAL_FEATURES)
+    add_definitions(-DUSE_GDAL_FEATURES)
+endif()
 
 add_library(QGeoView ALIAS qgeoview)
 

@@ -6,6 +6,7 @@
 class QGVWidgetMeasure;
 class QGVLayerGeoJson;
 class QGVLayerESRI;
+class QGVLayer;
 
 class VectorLayersDemo : public DemoItem
 {
@@ -19,6 +20,7 @@ public:
 
     QString comment() const override;
 
+    void setSelected(QGVLayer* layer, bool selected);
 private:
     void onInit() override;
 

@@ -6,6 +6,8 @@
 #include "QGVShapePolygon.h"
 #include "QGVShapeLine.h"
 
+QTemporaryDir QGVLayerFile::internalTempDir{};
+
 QGVLayerFile::QGVLayerFile(QGVItem* parent, const QString& sourceFileName) :
     mSourceFileName(sourceFileName)
 {
@@ -76,6 +78,11 @@ QVariant QGVLayerItemData::getProperty(const QString& prop)
     return mProps.value(prop);
 }
 
+void QGVLayerItemData::setProperty(const QString& property, const QVariant& value)
+{
+    mProps.insert(property, value);
+}
+
 QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& itemData)
 {
     const QString shapeIcon = ":/resources/pin-icon.png";
@@ -93,4 +100,48 @@ QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& ite
     }
 
     return nullptr;
+}
+
+QGVDrawItem* QGVLayerFile::createNewShape(QGVItem* parent, QGVLayerItemData& itemData, const QString& pointIcon, const QColor& lineColor, const QColor& polygonColor)
+{
+    switch (itemData.getType()) {
+        case QGVLayerShapeType::Point:
+            return new QGVShapeIcon(parent, itemData, pointIcon);
+            break;
+        case QGVLayerShapeType::Line:
+            itemData.setProperty("stroke", lineColor);
+            return new QGVShapeLine(parent, itemData);
+            break;
+        case QGVLayerShapeType::Polygon:
+            itemData.setProperty("stroke", polygonColor);
+            itemData.setProperty("fill", polygonColor);
+            itemData.setProperty("fill-opacity", 0.5);
+            return new QGVShapePolygon(parent, itemData);
+            break;
+    }
+
+    return nullptr;
+}
+
+bool QGVLayerFile::resourceToDisk(const QString& resourceFile, QString& diskFile)
+{
+    if (!QGVLayerFile::internalTempDir.isValid()) { return false; }
+
+    QFileInfo fileInfo{resourceFile};
+    const auto fileName = fileInfo.fileName();
+
+    if (fileName.isEmpty() || fileName.isNull()) { return false; }
+
+    diskFile = QGVLayerFile::internalTempDir.path() + "/" + fileName;
+    return QFile::copy(resourceFile, diskFile);
+}
+
+char* QGVLayerFile::stringToCharArr(const QString& str)
+{
+    const auto fileAsByte = str.toLocal8Bit();
+
+    char* strAsArray = new char[str.length() + 1];
+    snprintf(strAsArray, str.length() + 1, "%s", fileAsByte.data());
+
+    return strAsArray;
 }

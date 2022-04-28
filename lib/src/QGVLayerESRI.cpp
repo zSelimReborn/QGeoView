@@ -1,4 +1,5 @@
 #include "QGVLayerESRI.h"
+#include "QGVDBFParser.h"
 
 #include "shapefil.h"
 #include <cstring>
@@ -7,6 +8,15 @@ QGVLayerESRI::QGVLayerESRI(QGVItem* parent, const QString& sourceFile) :
     QGVLayerFile(parent, sourceFile)
 {
     initializeMappingShapeTypes();
+
+    mDbfParser = new QGVDBFParser();
+    mDbfSourceFile = sourceFile;
+}
+
+QGVLayerESRI::QGVLayerESRI(QGVItem* parent, const QString& sourceFile, const QString& dbfSource) :
+    QGVLayerESRI(parent, sourceFile)
+{
+    mDbfSourceFile = dbfSource;
 }
 
 QGVLayerShapeType QGVLayerESRI::getShapeTypeFromNumber(const quint8& shapeId)
@@ -30,6 +40,7 @@ void QGVLayerESRI::initializeMappingShapeTypes()
 void QGVLayerESRI::buildShapes()
 {
     initializeSourceFileAsCharArray();
+    initializeDbfParser();
 
     // Source file must be and absolute path to a file.
     const auto shpHandle = SHPOpen(mSourceFileNameAsCharArray, "rb");
@@ -49,7 +60,7 @@ void QGVLayerESRI::buildShapes()
         }
 
         QGVLayerItemData::GeoCoordinates shapeCoords;
-        QGVLayerItemData::Properties shapeProperties;
+        QGVLayerItemData::Properties shapeProperties = mDbfParser->parseProperties(i);
         const auto shapeType = getShapeTypeFromNumber(shape->nSHPType);
 
         if (shapeType != QGVLayerShapeType::Point
@@ -71,18 +82,41 @@ void QGVLayerESRI::buildShapes()
     }
 
     SHPClose(shpHandle);
+    closeDbfParser();
 }
 
 void QGVLayerESRI::initializeSourceFileAsCharArray()
 {
-    const auto sourceFile = getSourceFileName();
-    const auto fileAsByte = sourceFile.toLocal8Bit();
-
-    mSourceFileNameAsCharArray = new char[sourceFile.length() + 1];
-    strcpy(mSourceFileNameAsCharArray, fileAsByte.data());
+    mSourceFileNameAsCharArray = QGVLayerFile::stringToCharArr(getSourceFileName());
 }
 
 char* QGVLayerESRI::getSourceFileNameAsCharArray()
 {
     return mSourceFileNameAsCharArray;
+}
+
+void QGVLayerESRI::setSourceFileName(const QString& fileName)
+{
+    QGVLayerFile::setSourceFileName(fileName);
+    mDbfSourceFile = fileName;
+}
+
+QString QGVLayerESRI::getDbfSourceFile() const
+{
+    return mDbfSourceFile;
+}
+
+void QGVLayerESRI::initializeDbfParser()
+{
+    const auto sourceFile = getDbfSourceFile();
+    if (sourceFile.isEmpty() || sourceFile.isNull()) {
+        return;
+    }
+
+    mDbfParser->setSourceFile(sourceFile);
+}
+
+void QGVLayerESRI::closeDbfParser()
+{
+    mDbfParser->close();
 }
