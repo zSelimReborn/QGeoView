@@ -53,6 +53,12 @@ QGVMap::QGVMap(QWidget* parent)
     setLayout(new QVBoxLayout(this));
     layout()->addWidget(mQGView.data());
     refreshProjection();
+
+    QTransform pitchTransform{};
+    pitchTransform.rotate(30, Qt::Axis::XAxis);
+    qDebug() << "mQGView pitch transform" << pitchTransform;
+    mQGView.data()->setTransform(pitchTransform, true);
+    qDebug() << "mQGView transform" << mQGView.data()->transform();
 }
 
 QGVMap::~QGVMap()

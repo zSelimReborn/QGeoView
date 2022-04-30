@@ -69,6 +69,8 @@ add_executable(qgeoview-demo
     samples/vectortileslayers.cpp
     samples/geotiff.h
     samples/geotiff.cpp
+    samples/tilting.h
+    samples/tilting.cpp
 )
 
 if (DEFINED USE_GDAL_FEATURES)

@@ -107,7 +107,6 @@ void QGVBallon::projPaint(QPainter* painter)
     if (!shouldShowBallon()) {
         return;
     }
-
     // Ballon size
     // Create rect to fit the text
     const auto fontMetrics = painter->fontMetrics();

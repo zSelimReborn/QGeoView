@@ -88,6 +88,7 @@ add_library(qgeoview SHARED
     include/QGeoView/QGVBallon.h
     include/QGeoView/QGVLine.h
     include/QGeoView/QGVWidgetMeasure.h
+    include/QGeoView/QGVWidgetPerspective.h
     include/QGeoView/QGVLayerFile.h
     include/QGeoView/QGVLayerGeoJson.h
     include/QGeoView/QGVLayerESRI.h
@@ -132,6 +133,7 @@ add_library(qgeoview SHARED
     src/QGVBallon.cpp
     src/QGVLine.cpp
     src/QGVWidgetMeasure.cpp
+    src/QGVWidgetPerspective.cpp
     src/QGVLayerFile.cpp
     src/QGVLayerGeoJson.cpp
     src/QGVLayerESRI.cpp
