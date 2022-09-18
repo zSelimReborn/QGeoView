@@ -1,4 +1,4 @@
-#ifdef USE_GDAL_FEATURES
+
 
 #include "QGVGeoTiffParser.h"
 #include "QGVImage.h"
@@ -46,7 +46,7 @@ bool QGVGeoTiffParser::loadGeometryFromFile(const QString& fileName, QGV::GeoRec
     }
 
     const auto destSpatialReferenceName = QGVLayerFile::stringToCharArr(spatialReference);
-    const auto sourceSpatialRef = tiffDataset->GetSpatialRef();
+    const auto sourceSpatialRef = tiffDataset->GetSpatialRef();//GetSpatialRef();
     OGRSpatialReference destSpatialRef{};
     destSpatialRef.SetWellKnownGeogCS(destSpatialReferenceName);
     OGRCoordinateTransformation *coordinateTransformer = OGRCreateCoordinateTransformation(sourceSpatialRef, &destSpatialRef);
@@ -106,4 +106,3 @@ QGVImage* QGVGeoTiffParser::buildFromFile(const QString& fileName)
     return geoImg;
 }
 
-#endif

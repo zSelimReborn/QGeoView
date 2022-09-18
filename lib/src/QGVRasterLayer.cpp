@@ -1,4 +1,4 @@
-#ifdef USE_GDAL_FEATURES
+
 
 #include "QGVRasterLayer.h"
 #include "QGVGeoTiffParser.h"
@@ -18,4 +18,4 @@ void QGVRasterLayer::buildShapes()
     }
 }
 
-#endif
+
