@@ -12,6 +12,9 @@ find_package(Qt${QT_VERSION} REQUIRED COMPONENTS
              Positioning
             )
 
+find_package(GDAL 3 REQUIRED)
+include_directories(${GDAL_INCLUDE_DIR})
+
 # External lib for reading shapefiles
 ExternalProject_Add(shapelib
         GIT_REPOSITORY https://github.com/OSGeo/shapelib.git
@@ -38,25 +41,10 @@ set(LIBSHAPELIB ${LIBSHAPELIB} PARENT_SCOPE)
 # External lib for reading pbf/mvt files
 ExternalProject_Add(protozero
         GIT_REPOSITORY https://github.com/mapbox/protozero.git
-        BUILD_ALWAYS 1
         CMAKE_ARGS -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib -DBUILD_SHARED_LIBS=OFF
         TIMEOUT 360
         )
 
-# External lib gdal
-ExternalProject_Add(gdal
-        GIT_REPOSITORY https://github.com/OSGeo/gdal.git
-        BUILD_ALWAYS 1
-        CMAKE_ARGS -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH} -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION} -DCMAKE_INSTALL_LIBDIR=${EXTERNAL_INSTALL_LOCATION}/lib
-        TIMEOUT 360
-        )
-set(LIBGDAL ${EXTERNAL_INSTALL_LOCATION}/lib/libgdal.lib)
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    set(LIBGDAL ${EXTERNAL_INSTALL_LOCATION}/lib/libgdal.dll)
-elseif(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(LIBGDAL ${EXTERNAL_INSTALL_LOCATION}/lib/libgdal.dylib)
-endif()
-set(LIBGDAL ${LIBGDAL} PARENT_SCOPE)
 
 qt5_add_resources (RCC_SOURCES resources.qrc)
 
@@ -154,8 +142,6 @@ add_library(qgeoview SHARED
     src/QGVRasterLayer.cpp
     )
 
-add_dependencies(gdal shapelib)
-add_dependencies(qgeoview gdal)
 add_dependencies(qgeoview shapelib)
 add_dependencies(qgeoview protozero)
 
@@ -179,7 +165,7 @@ target_link_libraries(qgeoview
         Qt${QT_VERSION}::Network
         Qt${QT_VERSION}::Positioning
         ${LIBSHAPELIB}
-        ${LIBGDAL}
+	GDAL::GDAL
         )
 
 add_library(QGeoView ALIAS qgeoview)
