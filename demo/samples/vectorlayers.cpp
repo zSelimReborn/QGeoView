@@ -25,7 +25,7 @@ QString VectorLayersDemo::comment() const
 void VectorLayersDemo::onInit()
 {
 
-    const QString layerJson = ":/resources/map.geojson";
+    const QString layerJson = ":/resources/italy.geojson";
     mLayerJson = new QGVLayerGeoJson(geoMap()->rootItem(), layerJson);
 
     geoMap()->addItem(mLayerJson);

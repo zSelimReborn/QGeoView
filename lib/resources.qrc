@@ -17,5 +17,6 @@
         <file>resources/POLYLINE.dbf</file>
         <file>resources/coast.tif</file>
         <file>resources/venice.tif</file>
+        <file>resources/italy.geojson</file>
     </qresource>
 </RCC>

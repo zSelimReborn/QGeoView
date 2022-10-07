@@ -24,7 +24,7 @@ void QGVWidgetPerspective::rotateMap(const int& degrees)
 
     const auto rotationToApply = (degrees - mCurrentRotation);
     QTransform pitchTransform{};
-    pitchTransform.rotate(rotationToApply, Qt::Axis::XAxis);
+    pitchTransform.rotate(rotationToApply, Qt::Axis::ZAxis);
 
     qDebug() << "[Perspective] Map Pitch To Apply" << pitchTransform;
 
