@@ -1,4 +1,3 @@
-#ifdef USE_GDAL_FEATURES
 
 #ifndef QGVRASTERLAYER_H
 #define QGVRASTERLAYER_H
@@ -18,4 +17,4 @@ private:
 };
 
 #endif // QGVRASTERLAYER_H
-#endif // USE_GDAL_FEATURES
+

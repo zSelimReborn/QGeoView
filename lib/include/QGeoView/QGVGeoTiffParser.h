@@ -1,4 +1,4 @@
-#ifdef USE_GDAL_FEATURES
+
 
 #ifndef QGVGEOTIFFPARSER_H
 #define QGVGEOTIFFPARSER_H
@@ -22,4 +22,4 @@ private:
 };
 
 #endif // QGVGEOTIFFPARSER_H
-#endif // USE_GDAL_FEATURES
+

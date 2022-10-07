@@ -1,4 +1,4 @@
-#ifdef USE_GDAL_FEATURES
+
 
 #ifndef GEOTIFF_H
 #define GEOTIFF_H
@@ -31,4 +31,4 @@ private:
 };
 
 #endif // GEOTIFF_H
-#endif // USE_GDAL_FEATURES
+
